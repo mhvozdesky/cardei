@@ -1,6 +1,3 @@
-EMAIL_IS_USED = 'email_is_used'
+EMAIL_IS_USED = 'Такий email вже використовується'
+PASSWORD_MISMATCH = 'Паролі не співпадають'
 
-
-notification_dict = {
-    EMAIL_IS_USED: 'Такий email вже використовується'
-}
