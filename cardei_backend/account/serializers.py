@@ -6,7 +6,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
 from account.models import CardeiUser
-from notification.notification import EMAIL_IS_USED, PASSWORD_MISMATCH
+from notification.notification import EMAIL_IS_USED, INCORRECT_CREDITS
+from django.contrib.auth import authenticate
 
 
 # class CardeiUserCreateSerializer(UserCreatePasswordRetypeSerializer):
@@ -102,3 +103,21 @@ class CardeiUserCreateSerializer(UserCreatePasswordRetypeSerializer):
             settings.USER_ID_FIELD,
             'password'
         )
+
+
+class CardeiUserAuthSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=100, required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        email = data['email']
+        password = data['password']
+        user_auth = authenticate(
+            request=self.context['request'],
+            email=email,
+            password=password)
+
+        if user_auth is None:
+            raise serializers.ValidationError(INCORRECT_CREDITS)
+        data['user_auth'] = user_auth
+        return data
