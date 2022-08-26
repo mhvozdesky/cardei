@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import login, logout
+from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 
@@ -18,16 +19,23 @@ class CardeiUserView(ModelViewSet):
         return models.CardeiUser.objects.filter(id=self.request.user.id)
 
 
-class RegistrationCardeiUserViewSet(ModelViewSet):
-    serializer_class = serializers.CardeiUserCreateSerializer
-    queryset = models.CardeiUser
-
-    @action(methods=['POST'], detail=False, permission_classes=[AllowAny])
-    def register(self, request):
-        serializer = self.get_serializer(data=request.data)
+class RegistrationCardeiUserView(APIView):
+    def post(self, request):
+        serializer = serializers.CardeiUserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         cardei_user = serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+    # serializer_class = serializers.CardeiUserCreateSerializer
+    # queryset = models.CardeiUser
+    #
+    # @action(methods=['POST'], detail=False, permission_classes=[AllowAny])
+    # def register(self, request):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     cardei_user = serializer.save()
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class AuthCardeiUserViewSet(ModelViewSet):
