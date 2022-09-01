@@ -47,17 +47,6 @@ class LogoutCardeiUserView(APIView):
         return Response({'detail': notification.LOGOUT_SUCCESSFUL})
 
 
-    # serializer_class = serializers.CardeiUserCreateSerializer
-    # queryset = models.CardeiUser
-    #
-    # @action(methods=['POST'], detail=False, permission_classes=[AllowAny])
-    # def register(self, request):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     cardei_user = serializer.save()
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
 class AuthCardeiUserViewSet(ModelViewSet):
     serializer_class = serializers.CardeiUserAuthSerializer
     queryset = models.CardeiUser
@@ -83,7 +72,4 @@ class CardeiUserProfile(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
-        # instance = self.get_object()
-        # serializer = self.get_serializer(instance)
-        # return Response(serializer.data)
         return Response(data=self.get_serializer(instance=request.user).data)
