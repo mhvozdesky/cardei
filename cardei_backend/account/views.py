@@ -27,6 +27,24 @@ class RegistrationCardeiUserView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class LoginCardeiUserView(APIView):
+    def post(self, request):
+        serializer_class = serializers.CardeiUserAuthSerializer
+        serializer = serializers.CardeiUserAuthSerializer(data=request.data)
+        serializer.context.setdefault('request', self.request)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data.get('user_auth')
+        login(request, user)
+        request.session.set_expiry(0)
+        return Response({'detail': 'Login successful'})
+
+
+class LogoutCardeiUserView(APIView):
+    def get(self, request):
+        logout(request)
+        return Response({'detail': 'Logout successful'})
+
+
     # serializer_class = serializers.CardeiUserCreateSerializer
     # queryset = models.CardeiUser
     #
