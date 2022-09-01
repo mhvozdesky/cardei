@@ -8,6 +8,8 @@ from django.contrib.auth import login, logout
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
+from notification import notification
+
 
 class CardeiUserView(ModelViewSet):
     """Internal user display"""
@@ -36,13 +38,13 @@ class LoginCardeiUserView(APIView):
         user = serializer.validated_data.get('user_auth')
         login(request, user)
         request.session.set_expiry(0)
-        return Response({'detail': 'Login successful'})
+        return Response({'detail': notification.LOGIN_SUCCESSFUL})
 
 
 class LogoutCardeiUserView(APIView):
     def get(self, request):
         logout(request)
-        return Response({'detail': 'Logout successful'})
+        return Response({'detail': notification.LOGOUT_SUCCESSFUL})
 
 
     # serializer_class = serializers.CardeiUserCreateSerializer
