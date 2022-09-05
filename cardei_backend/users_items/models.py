@@ -10,9 +10,15 @@ class Category(models.Model):
         null=True,
         blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class Tag(models.Model):
     title = models.TextField()
+
+    def __str__(self):
+        return self.title
 
 
 class Element(models.Model):
