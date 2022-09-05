@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 from account import models as account_models
@@ -34,8 +35,16 @@ class Element(models.Model):
     month = models.TextField(null=True, blank=True)
     cvv = models.TextField(null=True, blank=True)
     pin_code = models.TextField(null=True, blank=True)
-    date_creation = models.TextField(null=True, blank=True)
-    date_update = models.TextField(null=True, blank=True)
+    date_creation = models.DateTimeField(
+        auto_now_add=True,
+        blank=False,
+        null=False
+    )
+    date_update = models.DateTimeField(
+        auto_now=True,
+        blank=False,
+        null=False
+    )
     archived = models.BooleanField(default=False)
     tag = models.ManyToManyField(
         Tag,
