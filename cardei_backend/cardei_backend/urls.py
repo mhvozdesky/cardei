@@ -20,7 +20,7 @@ from cardei_backend import settings
 
 api_urls = [
     path('', include('account.urls')),
-    # path('', include('users_items.urls')),
+    path('', include('users_items.urls')),
 ]
 
 urlpatterns = [
