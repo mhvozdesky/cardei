@@ -7,6 +7,7 @@ from users_items import models, serializers
 
 items_fields = {
     'Логін': [
+        'id',
         'title',
         'login',
         'password',
@@ -18,6 +19,7 @@ items_fields = {
         'category'
     ],
     'Пароль': [
+        'id',
         'title',
         'password',
         'tag',
@@ -26,6 +28,7 @@ items_fields = {
         'category'
     ],
     'Замітка': [
+        'id',
         'title',
         'text',
         'tag',
@@ -34,6 +37,7 @@ items_fields = {
         'category'
     ],
     'Банківська карта': [
+        'id',
         'title',
         'owner_name',
         'card_number',
