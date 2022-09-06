@@ -16,7 +16,12 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=50, null=False, blank=False)
+    title = models.CharField(
+        max_length=50,
+        null=False,
+        blank=False,
+        unique=True
+    )
     user = models.ForeignKey(
         account_models.CardeiUser,
         on_delete=models.CASCADE,
