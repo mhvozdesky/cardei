@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.http.request import QueryDict
 
 from users_items import models, serializers
 from notification import notification
@@ -87,6 +88,8 @@ class ItemsViewSet(viewsets.ModelViewSet):
         item_cat_title = category.title
 
         data_to_serializer = request.data
+        if isinstance(request.data, QueryDict):
+            data_to_serializer = data_to_serializer.dict()
         data_to_serializer['user'] = request.user.pk
 
         serializer = serializers.UsersItemsSerializer(
