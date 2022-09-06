@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 from users_items import models, serializers
 from notification import notification
@@ -102,11 +103,9 @@ class ItemsViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, pk, *args, **kwargs):
         item = models.Element.objects.get(pk=pk)
-        if item.user != request.user:
-            return Response(
-                {'detail': notification.INVALID_ELEMENT_ID},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        authorship, response = self.element_authorship(item, request)
+        if not authorship:
+            return response
         super().partial_update(request, *args, **kwargs)
 
         serializer = serializers.UsersItemsSerializer(
@@ -117,17 +116,27 @@ class ItemsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def items_detail(self, request, pk):
-        querysets = self.get_queryset()
-        serializer_data = []
-        for qs in querysets:
-            serializer = serializers.UsersItemsSerializer(
-                qs,
-                fields=items_fields.get(qs.category.title, None)
-            )
-            serializer_data.append(serializer.data)
+        item = get_object_or_404(models.Element, pk=pk)
+        authorship, response = self.element_authorship(item, request)
+        if not authorship:
+            return response
 
-        return Response(serializer_data)
+        serializer = serializers.UsersItemsSerializer(
+            item,
+            fields=items_fields.get(item.category.title, None)
+        )
+
+        return Response(serializer.data)
 
     @staticmethod
     def get_category_item_from_request(req_cat: str) -> models.Category:
         return models.Category.objects.get(pk=req_cat)
+
+    @staticmethod
+    def element_authorship(item, request):
+        if item.user != request.user:
+            return False, Response(
+                {'detail': notification.INVALID_ELEMENT_ID},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return True, None
