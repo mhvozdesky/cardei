@@ -62,6 +62,7 @@ items_fields = {
 
 class ItemsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
+    serializer_class = serializers.UsersItemsSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -80,9 +81,8 @@ class ItemsViewSet(viewsets.ModelViewSet):
         return Response(serializer_data)
 
     def create_item(self, request, *args, **kwargs):
-        item_cat_title = models.Category.objects.get(
-            pk=request.data['category']
-        ).title
+        category = self.get_category_item_from_request(request.data['category'])
+        item_cat_title = category.title
 
         data_to_serializer = request.data
         data_to_serializer['user'] = request.user.pk
@@ -98,3 +98,18 @@ class ItemsViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def partial_update(self, request, pk, *args, **kwargs):
+        super().partial_update(request, *args, **kwargs)
+
+        qs = models.Element.objects.get(pk=pk)
+        serializer = serializers.UsersItemsSerializer(
+            qs,
+            fields=items_fields.get(qs.category.title, None)
+        )
+
+        return Response(serializer.data)
+
+    @staticmethod
+    def get_category_item_from_request(req_cat: str) -> models.Category:
+        return models.Category.objects.get(pk=req_cat)
