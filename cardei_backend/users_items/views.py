@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
 from users_items import models, serializers
 
@@ -16,16 +17,19 @@ items_fields = {
         'tag',
         'date_creation',
         'date_update',
-        'category'
+        'category',
+        'user'
     ],
     'Пароль': [
         'id',
         'title',
         'password',
+        'notes',
         'tag',
         'date_creation',
         'date_update',
-        'category'
+        'category',
+        'user'
     ],
     'Замітка': [
         'id',
@@ -34,7 +38,8 @@ items_fields = {
         'tag',
         'date_creation',
         'date_update',
-        'category'
+        'category',
+        'user'
     ],
     'Банківська карта': [
         'id',
@@ -49,7 +54,8 @@ items_fields = {
         'tag',
         'date_creation',
         'date_update',
-        'category'
+        'category',
+        'user'
     ]
 }
 
@@ -72,3 +78,23 @@ class ItemsViewSet(viewsets.ModelViewSet):
             serializer_data.append(serializer.data)
 
         return Response(serializer_data)
+
+    def create_item(self, request, *args, **kwargs):
+        item_cat_title = models.Category.objects.get(
+            pk=request.data['category']
+        ).title
+
+        data_to_serializer = request.data
+        data_to_serializer['user'] = request.user.pk
+
+        serializer = serializers.UsersItemsSerializer(
+            data=data_to_serializer,
+            fields=items_fields.get(item_cat_title, None)
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

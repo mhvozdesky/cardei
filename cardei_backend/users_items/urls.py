@@ -4,6 +4,6 @@ from users_items import views
 
 urlpatterns = [
     path('items/', views.ItemsViewSet.as_view({
-        'get': 'items_list', 'post': 'create'
+        'get': 'items_list', 'post': 'create_item'
     }), name='url_items'),
 ]
