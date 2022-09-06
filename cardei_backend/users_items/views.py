@@ -14,21 +14,24 @@ items_fields = {
         'notes',
         'tag',
         'date_creation',
-        'date_update'
+        'date_update',
+        'category'
     ],
     'Пароль': [
         'title',
         'password',
         'tag',
         'date_creation',
-        'date_update'
+        'date_update',
+        'category'
     ],
     'Замітка': [
         'title',
         'text',
         'tag',
         'date_creation',
-        'date_update'
+        'date_update',
+        'category'
     ],
     'Банківська карта': [
         'title',
@@ -41,7 +44,8 @@ items_fields = {
         'notes',
         'tag',
         'date_creation',
-        'date_update'
+        'date_update',
+        'category'
     ]
 }
 
