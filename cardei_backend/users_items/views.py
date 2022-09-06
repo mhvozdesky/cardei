@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from users_items import models, serializers
+from notification import notification
 
 items_fields = {
     'Логін': [
@@ -100,15 +101,32 @@ class ItemsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def partial_update(self, request, pk, *args, **kwargs):
+        item = models.Element.objects.get(pk=pk)
+        if item.user != request.user:
+            return Response(
+                {'detail': notification.INVALID_ELEMENT_ID},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         super().partial_update(request, *args, **kwargs)
 
-        qs = models.Element.objects.get(pk=pk)
         serializer = serializers.UsersItemsSerializer(
-            qs,
-            fields=items_fields.get(qs.category.title, None)
+            item,
+            fields=items_fields.get(item.category.title, None)
         )
 
         return Response(serializer.data)
+
+    def items_detail(self, request, pk):
+        querysets = self.get_queryset()
+        serializer_data = []
+        for qs in querysets:
+            serializer = serializers.UsersItemsSerializer(
+                qs,
+                fields=items_fields.get(qs.category.title, None)
+            )
+            serializer_data.append(serializer.data)
+
+        return Response(serializer_data)
 
     @staticmethod
     def get_category_item_from_request(req_cat: str) -> models.Category:

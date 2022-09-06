@@ -7,6 +7,6 @@ urlpatterns = [
         'get': 'items_list', 'post': 'create_item'
     }), name='url_items'),
     path('items/<int:pk>/', views.ItemsViewSet.as_view(
-        {'patch': 'partial_update'}
+        {'patch': 'partial_update', 'get': 'items_detail'}
     ))
 ]
