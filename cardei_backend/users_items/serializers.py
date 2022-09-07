@@ -11,6 +11,12 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['title']
 
 
+class TagListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = '__all__'
+
+
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
