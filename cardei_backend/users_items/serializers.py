@@ -25,7 +25,6 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
 class UsersItemsSerializer(DynamicFieldsModelSerializer):
     tag = TagSerializer(many=True)
-    # tag = serializers.CharField(max_length=50)
 
     class Meta:
         model = models.Element
@@ -53,11 +52,3 @@ class UsersItemsSerializer(DynamicFieldsModelSerializer):
             return models.Tag.objects.filter(title=tag).first()
 
         return models.Tag.objects.create(title=tag, user=instance_super.user)
-
-        # if not tag_exists:
-        #     models.Tag.objects.create(title=tag, user=instance_super.user)
-
-
-
-    # def validate(self, attrs):
-    #     print
