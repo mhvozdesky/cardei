@@ -36,15 +36,33 @@ class UsersItemsSerializer(DynamicFieldsModelSerializer):
         instance_super = super(UsersItemsSerializer, self).create(validated_data)
 
         if tags:
-            tag_list = []
-            for tag in tags:
-                tag_inst = self.process_tags(tag['title'], instance_super)
-                tag_list.append(tag_inst)
-
-            instance_super.tag.set(tag_list)
-            instance_super.save()
+            self.add_tag_to_element(tags, instance_super)
 
         return instance_super
+
+    def update(self, instance, validated_data):
+        tags = validated_data.pop('tag', None)
+
+        instance_super = super(UsersItemsSerializer, self).update(
+            instance,
+            validated_data
+        )
+
+        if tags:
+            self.add_tag_to_element(tags, instance_super)
+        else:
+            instance_super.tag.set([])
+
+        return instance_super
+
+    def add_tag_to_element(self, tags, instance_super):
+        tag_list = []
+        for tag in tags:
+            tag_inst = self.process_tags(tag['title'], instance_super)
+            tag_list.append(tag_inst)
+
+        instance_super.tag.set(tag_list)
+        instance_super.save()
 
     def process_tags(self, tag, instance_super):
         tag_exists = models.Tag.objects.filter(title=tag).exists()
