@@ -19,8 +19,7 @@ class Tag(models.Model):
     title = models.CharField(
         max_length=50,
         null=False,
-        blank=False,
-        unique=True
+        blank=False
     )
     user = models.ForeignKey(
         account_models.CardeiUser,

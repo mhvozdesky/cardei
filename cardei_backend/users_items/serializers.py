@@ -71,8 +71,8 @@ class UsersItemsSerializer(DynamicFieldsModelSerializer):
         instance_super.save()
 
     def process_tags(self, tag, instance_super):
-        tag_exists = models.Tag.objects.filter(title=tag).exists()
+        tag_exists = models.Tag.objects.filter(title=tag, user=instance_super.user).exists()
         if tag_exists:
-            return models.Tag.objects.filter(title=tag).first()
+            return models.Tag.objects.filter(title=tag, user=instance_super.user).first()
 
         return models.Tag.objects.create(title=tag, user=instance_super.user)
