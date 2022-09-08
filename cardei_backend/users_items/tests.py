@@ -45,10 +45,15 @@ items_data_for_create = {
 }
 
 
-def create_item(self, csrftoken, cat='Логін'):
+def create_item(self, csrftoken, cat='Логін', data=None):
+    if data is None:
+        items_data = items_data_for_create[cat]
+    else:
+        items_data = data
+
     request = self.client.post(
         reverse('url_items'),
-        data=items_data_for_create[cat],
+        data=items_data,
         format='json',
         **{'X-CSRFToken': csrftoken}
     )
@@ -80,6 +85,12 @@ class ItemsTests(APITestCase):
         self.assertEqual(request.status_code, 403)
 
         request = self.client.patch(reverse('url_items_detail', kwargs={'pk': 16}))
+        self.assertEqual(request.status_code, 403)
+
+        request = self.client.get(reverse('url_taglist'))
+        self.assertEqual(request.status_code, 403)
+
+        request = self.client.get(reverse('url_categorylist'))
         self.assertEqual(request.status_code, 403)
 
     def test_item_method_not_allowed(self):
@@ -182,3 +193,154 @@ class ItemsTests(APITestCase):
         )
 
         self.assertEqual(request.status_code, 200)
+
+    def test_element_with_tag(self):
+        create_user(self)
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        # create element with tag
+        data = items_data_for_create['Логін']
+        data['tag'] = [
+            {
+                "title": 'main'
+            },
+            {
+                'title': 'films'
+            }
+        ]
+
+        request = create_item(
+            self,
+            csrftoken,
+            cat='Логін',
+            data=data
+        )
+
+        self.assertEqual(request.status_code, 201)
+        self.assertEqual(request.data['tag'], data['tag'])
+
+        # update tags
+        data['tag'] = [
+            {
+                "title": 'main'
+            }
+        ]
+
+        request = create_item(
+            self,
+            csrftoken,
+            cat='Логін',
+            data=data
+        )
+
+        self.assertEqual(request.data['tag'], data['tag'])
+
+        # delete tags
+        data['tag'] = []
+
+        request = create_item(
+            self,
+            csrftoken,
+            cat='Логін',
+            data=data
+        )
+
+        self.assertEqual(request.data['tag'], data['tag'])
+
+    def test_get_taglist(self):
+        create_user(self)
+        user = acc_models.CardeiUser.objects.get(email=user_create_data['email'])
+        user2 = acc_models.CardeiUser.objects.create(
+            email='user@example.com',
+            password='1111'
+        )
+
+        tag1 = models.Tag.objects.create(title='main', user=user)
+        tag2 = models.Tag.objects.create(title='films', user=user)
+        tag3 = models.Tag.objects.create(title='films', user=user2)
+
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        request = self.client.get(reverse('url_taglist'))
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(len(request.data), 2)
+
+        qs = models.Tag.objects.filter(title='films', user=user)
+        self.assertEqual(len(qs), 1)
+
+        qs = models.Tag.objects.filter(title='films')
+        self.assertEqual(len(qs), 2)
+
+    def test_tag_uniqueness(self):
+        create_user(self)
+        user = acc_models.CardeiUser.objects.get(email=user_create_data['email'])
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        # create element1 with tag
+        data = items_data_for_create['Логін']
+        data['tag'] = [
+            {
+                "title": 'main'
+            },
+            {
+                'title': 'films'
+            }
+        ]
+
+        request = create_item(
+            self,
+            csrftoken,
+            cat='Логін',
+            data=data
+        )
+        self.assertEqual(request.status_code, 201)
+
+        data['title'] = 'some title'
+        data['tag'] = [
+            {
+                "title": 'main'
+            }
+        ]
+
+        request = create_item(
+            self,
+            csrftoken,
+            cat='Логін',
+            data=data
+        )
+        self.assertEqual(request.status_code, 201)
+
+        qs = models.Tag.objects.filter(title='main', user=user)
+        self.assertEqual(len(qs), 1)
+
+    def test_categorylist(self):
+        create_user(self)
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        qs = models.Category.objects.all()
+        request = self.client.get(reverse('url_categorylist'))
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(len(request.data), len(qs))
+
+
+
