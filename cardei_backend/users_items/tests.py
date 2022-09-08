@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from rest_framework.test import APITestCase
 from django.urls import reverse
@@ -14,17 +15,20 @@ items_data_for_create = {
         'site': 'https://filmix.ua',
         'notes': 'Notes',
         'category': '1',
+        'tag': []
     },
     'Пароль': {
         'title': 'Пароль загальний',
         'password': 'wikiafsefs11sef',
         'notes': 'Нікому не казати',
-        'category': '2'
+        'category': '2',
+        'tag': []
     },
     'Замітка': {
         'title': 'Замітки на все про все',
         'text': 'Тут дуже великий текст.\r\n1. Пункт один\r\n2. Пункт два\r\n3. Пункт три',
-        'category': '3'
+        'category': '3',
+        'tag': []
     },
     'Банківська карта': {
         'title': 'Карта Моно',
@@ -35,7 +39,8 @@ items_data_for_create = {
         'month': '01',
         'cvv': '123',
         'pin_code': '0000',
-        'category': '4'
+        'category': '4',
+        'tag': []
     }
 }
 
@@ -44,6 +49,7 @@ def create_item(self, csrftoken, cat='Логін'):
     request = self.client.post(
         reverse('url_items'),
         data=items_data_for_create[cat],
+        format='json',
         **{'X-CSRFToken': csrftoken}
     )
 
