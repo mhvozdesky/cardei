@@ -10,5 +10,6 @@ urlpatterns = [
         {'patch': 'partial_update', 'get': 'items_detail'}),
         name='url_items_detail'
          ),
-    path('taglist/', views.TagListView.as_view())
+    path('taglist/', views.TagListView.as_view()),
+    path('categorylist/', views.CategoryListView.as_view())
 ]

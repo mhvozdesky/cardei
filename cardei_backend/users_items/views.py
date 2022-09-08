@@ -153,3 +153,12 @@ class TagListView(APIView):
         qs = models.Tag.objects.filter(user=request.user)
         serializer = serializers.TagListSerializer(qs, many=True)
         return Response(serializer.data)
+
+
+class CategoryListView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        qs = models.Category.objects.all()
+        serializer = serializers.CategoryListSerializer(qs, many=True)
+        return Response(serializer.data)
