@@ -342,5 +342,68 @@ class ItemsTests(APITestCase):
         self.assertEqual(request.status_code, 200)
         self.assertEqual(len(request.data), len(qs))
 
+    def test_delete_item(self):
+        create_user(self)
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
 
+        request = create_item(self, csrftoken)
+        id_element = request.data['id']
+
+        user = acc_models.CardeiUser.objects.get(email=user_create_data['email'])
+
+        request = self.client.delete(
+            reverse('url_items_detail', kwargs={'pk': id_element}),
+            **{'X-CSRFToken': csrftoken}
+        )
+
+        qs = models.Element.objects.filter(pk=id_element)
+
+        self.assertEqual(request.status_code, 204)
+        self.assertEqual(len(qs), 0)
+
+    def test_delete_foreign_element(self):
+        create_user(self)
+        user1 = acc_models.CardeiUser.objects.get(email=user_create_data['email'])
+
+        user2 = acc_models.CardeiUser.objects.create(
+            email='user2@example.com',
+            password='1111',
+            username='user2@example.com'
+        )
+
+        elements_data = items_data_for_create['Логін'].copy()
+        elements_data['category'] = models.Category.objects.get(pk=1)
+        elements_data.pop('tag')
+
+        elements_data['user'] = user1
+        element1 = models.Element.objects.create(**elements_data)
+
+        elements_data['user'] = user2
+        element2 = models.Element.objects.create(**elements_data)
+
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        request = self.client.delete(
+            reverse('url_items_detail', kwargs={'pk': element2.id}),
+            **{'X-CSRFToken': csrftoken}
+        )
+
+        self.assertEqual(request.status_code, 404)
+
+        request = self.client.delete(
+            reverse('url_items_detail', kwargs={'pk': element1.id}),
+            **{'X-CSRFToken': csrftoken}
+        )
+
+        self.assertEqual(request.status_code, 204)
 
