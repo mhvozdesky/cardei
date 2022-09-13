@@ -123,7 +123,12 @@ class ItemsViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        data = cardei_pycryptodome.process_dict(
+            serializer.data,
+            action='decrypt'
+        )
+
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
     def partial_update(self, request, pk, *args, **kwargs):
         item = models.Element.objects.get(pk=pk)
