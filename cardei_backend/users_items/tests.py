@@ -413,3 +413,49 @@ class ItemsTests(APITestCase):
 
         self.assertEqual(request.status_code, 204)
 
+    def test_not_receive_masterpass(self):
+        create_user(self)
+        request_user_login = login_user(
+            self,
+            user_create_data['email'],
+            user_create_data['password']
+        )
+        csrftoken = request_user_login.cookies['csrftoken'].value
+
+        # element creation.
+        request = self.client.post(
+            reverse('url_items'),
+            data=items_data_for_create['Логін'],
+            format='json',
+            **{'X-CSRFToken': csrftoken}
+        )
+        self.assertEqual(request.status_code, 400)
+        create_item(self, csrftoken)
+
+        # Get all elements.
+        request = self.client.get(reverse('url_items'))
+        self.assertEqual(request.status_code, 400)
+
+        # Get one element
+        user = acc_models.CardeiUser.objects.get(
+            email=user_create_data['email'])
+        first_item = models.Element.objects.filter(user=user).first()
+
+        request = self.client.get(
+            reverse('url_items_detail', kwargs={'pk': first_item.id}))
+        self.assertEqual(request.status_code, 400)
+
+        # update element
+        request = self.client.patch(
+            reverse('url_items_detail', kwargs={'pk': first_item.id}),
+            data={'title': 'title update'},
+            **{'X-CSRFToken': csrftoken}
+        )
+
+        self.assertEqual(request.status_code, 400)
+
+
+
+
+
+
