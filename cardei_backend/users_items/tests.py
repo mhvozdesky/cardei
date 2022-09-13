@@ -55,6 +55,7 @@ def create_item(self, csrftoken, cat='Логін', data=None):
         reverse('url_items'),
         data=items_data,
         format='json',
+        HTTP_Masterpass='qwerty',
         **{'X-CSRFToken': csrftoken}
     )
 
@@ -135,6 +136,7 @@ class ItemsTests(APITestCase):
         )
         csrftoken = request_user_login.cookies['csrftoken'].value
 
+        # creating elements
         request = create_item(self, csrftoken)
         self.assertEqual(request.status_code, 201)
         set_data_request = set(request.data.keys())
@@ -159,14 +161,17 @@ class ItemsTests(APITestCase):
         set_reference = set(views.items_fields['Банківська карта'])
         self.assertEqual(set_data_request, set_reference)
 
-        request = self.client.get(reverse('url_items'))
+        # all elements must be 4
+        request = self.client.get(reverse('url_items'), HTTP_Masterpass='qwerty')
         self.assertEqual(len(request.data), 4)
 
+        # check getting one element
         user = acc_models.CardeiUser.objects.get(email=user_create_data['email'])
         first_item = models.Element.objects.filter(user=user).first()
 
         request = self.client.get(
-            reverse('url_items_detail', kwargs={'pk': first_item.id})
+            reverse('url_items_detail', kwargs={'pk': first_item.id}),
+            HTTP_Masterpass='qwerty'
         )
         self.assertEqual(request.status_code, 200)
         set_data_request = set(request.data.keys())
@@ -189,6 +194,7 @@ class ItemsTests(APITestCase):
         request = self.client.patch(
             reverse('url_items_detail', kwargs={'pk': id_element}),
             data={'title': 'title update'},
+            HTTP_Masterpass='qwerty',
             ** {'X-CSRFToken': csrftoken}
         )
 
