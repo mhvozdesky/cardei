@@ -9,6 +9,7 @@ from django.http.request import QueryDict
 
 from users_items import models, serializers
 from notification import notification
+from encryption_machine.machine import CardeiPycryptodome
 
 items_fields = {
     'Логін': [
@@ -63,6 +64,8 @@ items_fields = {
     ]
 }
 
+master_pass = '123qwerty'
+
 
 class ItemsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -75,23 +78,40 @@ class ItemsViewSet(viewsets.ModelViewSet):
     def items_list(self, request):
         querysets = self.get_queryset()
         serializer_data = []
+        if not request.headers.get('Masterpass', None):
+            return Response({'detail': notification.MISSING_MASTERPASS},
+                            status=status.HTTP_400_BAD_REQUEST)
+        cardei_pycryptodome = CardeiPycryptodome(request.headers['Masterpass'])
         for qs in querysets:
             serializer = serializers.UsersItemsSerializer(
                 qs,
                 fields=items_fields.get(qs.category.title, None)
             )
-            serializer_data.append(serializer.data)
+            data = cardei_pycryptodome.process_dict(
+                serializer.data,
+                action='decrypt'
+            )
+            serializer_data.append(data)
 
         return Response(serializer_data)
 
     def create_item(self, request, *args, **kwargs):
         category = self.get_category_item_from_request(request.data['category'])
         item_cat_title = category.title
+        if not request.headers.get('Masterpass', None):
+            return Response({'detail': notification.MISSING_MASTERPASS},
+                            status=status.HTTP_400_BAD_REQUEST)
+        cardei_pycryptodome = CardeiPycryptodome(request.headers['Masterpass'])
 
         data_to_serializer = request.data
         if isinstance(request.data, QueryDict):
             data_to_serializer = data_to_serializer.dict()
         data_to_serializer['user'] = request.user.pk
+
+        data_to_serializer = cardei_pycryptodome.process_dict(
+            request.data,
+            action='encrypt'
+        )
 
         serializer = serializers.UsersItemsSerializer(
             data=data_to_serializer,
@@ -108,20 +128,48 @@ class ItemsViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, pk, *args, **kwargs):
         item = models.Element.objects.get(pk=pk)
         authorship, response = self.element_authorship(item, request)
+        if not request.headers.get('Masterpass', None):
+            return Response({'detail': notification.MISSING_MASTERPASS},
+                            status=status.HTTP_400_BAD_REQUEST)
+        cardei_pycryptodome = CardeiPycryptodome(request.headers['Masterpass'])
         if not authorship:
             return response
-        super().partial_update(request, *args, **kwargs)
+        # super().partial_update(request, *args, **kwargs)
 
+        # write data
+        data = cardei_pycryptodome.process_dict(
+            request.data,
+            action='encrypt'
+        )
+
+        serializer = serializers.UsersItemsSerializer(
+            item,
+            data=data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # select data to return
         serializer = serializers.UsersItemsSerializer(
             item,
             fields=items_fields.get(item.category.title, None)
         )
 
-        return Response(serializer.data)
+        data = cardei_pycryptodome.process_dict(
+            serializer.data,
+            action='decrypt'
+        )
+
+        return Response(data)
 
     def items_detail(self, request, pk):
         item = get_object_or_404(models.Element, pk=pk)
         authorship, response = self.element_authorship(item, request)
+        if not request.headers.get('Masterpass', None):
+            return Response({'detail': notification.MISSING_MASTERPASS},
+                            status=status.HTTP_400_BAD_REQUEST)
+        cardei_pycryptodome = CardeiPycryptodome(request.headers['Masterpass'])
         if not authorship:
             return response
 
@@ -130,7 +178,12 @@ class ItemsViewSet(viewsets.ModelViewSet):
             fields=items_fields.get(item.category.title, None)
         )
 
-        return Response(serializer.data)
+        data = cardei_pycryptodome.process_dict(
+            serializer.data,
+            action='decrypt'
+        )
+
+        return Response(data)
 
     @staticmethod
     def get_category_item_from_request(req_cat: str) -> models.Category:

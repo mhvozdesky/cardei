@@ -4,3 +4,4 @@ INCORRECT_CREDITS = 'Неправильна адреса електронної 
 LOGOUT_SUCCESSFUL = 'Logout successful'
 LOGIN_SUCCESSFUL = 'Login successful'
 INVALID_ELEMENT_ID = 'Invalid element id'
+MISSING_MASTERPASS = 'Missing masterpass'
