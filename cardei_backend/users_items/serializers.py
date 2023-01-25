@@ -35,8 +35,28 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
+class ItemTagField(serializers.Field):
+    def to_representation(self, obj):
+        return list(obj)
+
+    def to_internal_value(self, data):
+        return data
+
+    def add_tag_to_element(self, tags: set, instance_super):
+        for tag in tags:
+            tag_inst = self.process_tags(tag, instance_super)
+            models.ElementTag.objects.create(element=instance_super, tag=tag_inst)
+
+    def process_tags(self, tag_name, instance_super):
+        tag_exists = models.Tag.objects.filter(title=tag_name, user=instance_super.user).exists()
+        if tag_exists:
+            return models.Tag.objects.filter(title=tag_name, user=instance_super.user).first()
+
+        return models.Tag.objects.create(title=tag_name, user=instance_super.user)
+
+
 class UsersItemsSerializer(DynamicFieldsModelSerializer):
-    tag = TagSerializer(many=True)
+    tag = ItemTagField()
 
     class Meta:
         model = models.Element
@@ -48,7 +68,7 @@ class UsersItemsSerializer(DynamicFieldsModelSerializer):
         instance_super = super(UsersItemsSerializer, self).create(validated_data)
 
         if tags:
-            self.add_tag_to_element(tags, instance_super)
+            self.add_tag_to_element(set(tags), instance_super)
 
         return instance_super
 
@@ -61,24 +81,21 @@ class UsersItemsSerializer(DynamicFieldsModelSerializer):
         )
 
         if tags:
-            self.add_tag_to_element(tags, instance_super)
+            instance_super.element_tag.filter().delete()
+            self.add_tag_to_element(set(tags), instance_super)
         else:
-            instance_super.tag.set([])
+            instance_super.element_tag.filter().delete()
 
         return instance_super
 
-    def add_tag_to_element(self, tags, instance_super):
-        tag_list = []
+    def add_tag_to_element(self, tags: set, instance_super):
         for tag in tags:
-            tag_inst = self.process_tags(tag['title'], instance_super)
-            tag_list.append(tag_inst)
+            tag_inst = self.process_tags(tag, instance_super)
+            models.ElementTag.objects.create(element=instance_super, tag=tag_inst)
 
-        instance_super.tag.set(tag_list)
-        instance_super.save()
-
-    def process_tags(self, tag, instance_super):
-        tag_exists = models.Tag.objects.filter(title=tag, user=instance_super.user).exists()
+    def process_tags(self, tag_name, instance_super):
+        tag_exists = models.Tag.objects.filter(title=tag_name, user=instance_super.user).exists()
         if tag_exists:
-            return models.Tag.objects.filter(title=tag, user=instance_super.user).first()
+            return models.Tag.objects.filter(title=tag_name, user=instance_super.user).first()
 
-        return models.Tag.objects.create(title=tag, user=instance_super.user)
+        return models.Tag.objects.create(title=tag_name, user=instance_super.user)

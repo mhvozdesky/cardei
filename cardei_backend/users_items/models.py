@@ -29,7 +29,7 @@ class Tag(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user}. {self.title}'
+        return f'{self.title} ({self.user})'
 
 
 class Element(models.Model):
@@ -56,9 +56,6 @@ class Element(models.Model):
         null=False
     )
     archived = models.BooleanField(default=False)
-    tag = models.ManyToManyField(
-        Tag,
-        blank=True)
     category = models.ForeignKey(
         Category,
         null=False,
@@ -69,3 +66,19 @@ class Element(models.Model):
 
     def __str__(self):
         return f'{self.user}. {self.category} - {self.id}'
+
+    def tag(self):
+        return self.element_tag.values_list('tag__title', flat=True)
+
+
+class ElementTag(models.Model):
+    element = models.ForeignKey(
+        Element,
+        related_name='element_tag',
+        on_delete=models.CASCADE
+    )
+    tag = models.ForeignKey(
+        Tag,
+        related_name='element_tag',
+        on_delete=models.CASCADE
+    )

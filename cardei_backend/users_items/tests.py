@@ -211,14 +211,7 @@ class ItemsTests(APITestCase):
 
         # create element with tag
         data = items_data_for_create['Логін']
-        data['tag'] = [
-            {
-                "title": 'main'
-            },
-            {
-                'title': 'films'
-            }
-        ]
+        data['tag'] = ['main', 'films']
 
         request = create_item(
             self,
@@ -228,14 +221,11 @@ class ItemsTests(APITestCase):
         )
 
         self.assertEqual(request.status_code, 201)
-        self.assertEqual(request.data['tag'], data['tag'])
+        self.assertEqual(len(request.data['tag']), len(data['tag']))
+        self.assertTrue(all(i in data['tag'] for i in request.data['tag']))
 
         # update tags
-        data['tag'] = [
-            {
-                "title": 'main'
-            }
-        ]
+        data['tag'] = ['main']
 
         request = create_item(
             self,
@@ -299,14 +289,7 @@ class ItemsTests(APITestCase):
 
         # create element1 with tag
         data = items_data_for_create['Логін']
-        data['tag'] = [
-            {
-                "title": 'main'
-            },
-            {
-                'title': 'films'
-            }
-        ]
+        data['tag'] = ['main', 'films']
 
         request = create_item(
             self,
@@ -317,11 +300,7 @@ class ItemsTests(APITestCase):
         self.assertEqual(request.status_code, 201)
 
         data['title'] = 'some title'
-        data['tag'] = [
-            {
-                "title": 'main'
-            }
-        ]
+        data['tag'] = ['main']
 
         request = create_item(
             self,
@@ -453,9 +432,3 @@ class ItemsTests(APITestCase):
         )
 
         self.assertEqual(request.status_code, 400)
-
-
-
-
-
-
