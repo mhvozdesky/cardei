@@ -1,46 +1,15 @@
 <template>
-    <div class="main-banner bg bg1" id="home">
-        <!-- header -->
-        <header class="header">
-            <div class="container-fluid px-lg-5">
-                <!-- nav -->
-                <nav class="py-4">
-                    <div id="logo">
-                        <h1> <a href="#" class="editContent">DjangoMovie</a></h1>
-                    </div>
-
-                    <label for="drop" class="toggle">Menu</label>
-                    <input type="checkbox" id="drop">
-                    <ul class="menu mt-2">
-                        <li class="active"><a href="#">Главная</a></li>
-                        <li>
-                            <!-- First Tier Drop Down -->
-                            <label for="drop-2" class="toggle">Категории <span class="fa fa-angle-down" aria-hidden="true" ></span> </label>
-                            <a href="#">Категории <span class="fa fa-angle-down" aria-hidden="true"></span></a>
-                            <input type="checkbox" id="drop-2">
-                            <ul>
-                                <li><a href="#">Фильмы</a></li>
-                                <li><a href="#">Сериалы</a></li>
-                                <li><a href="#">Мультфильмы</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#" class="login">Вход</a></li>
-                    </ul>
-                </nav>
-                <!-- //nav -->
+    <div>
+        <header>
+            <div class="left-header">
+                <div class="content-left-header">
+                    <div class="content-left-header__text">Cardei</div> 
+                </div>
+            </div>
+            <div class="right-header">
+                <label>Maksym Hvozdetsky</label>
             </div>
         </header>
-        <!-- //header -->
-        <!--/banner-->
-        <div class="banner-info">
-            <p class="editContent" >лучший сайт на django 3</p>
-            <h3 class="mb-4 editContent">Все о кино</h3>
-            <div class="ban-buttons">
-
-
-            </div>
-        </div>
-        <!--// banner-inner -->
     </div>
 </template>
 
@@ -51,25 +20,33 @@
 </script>
 
 <style>
-    #home {
-        background-color: rgba(0, 0, 0, 0);
-        margin-top: 0;
-        background-image: url(../assets/single-post-pic.jpg);
+    header {
+        width: 100%;
+        height: 70px;
+        display: flex;
     }
 
-    .editContent {
-        outline: none;
-        outline-offset: -2px;
-        cursor: inherit;
-        /* color: rgb(255, 255, 255); */
-        font-size: 12px;
-        background-color: rgba(0, 0, 0, 0);
-        font-family: Source Sans Pro, sans-serif;
+    .left-header, .right-header {
+        border: 0.5px solid #dbdbdb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    .login {
-        color: rgb(255, 255, 255);
-        font-weight: 700;
-        text-transform: uppercase;
+    .left-header {
+        flex-grow: 1;
+    }
+
+    .right-header {
+        width: 240px;
+        position: relative;
+    }
+
+    .right-header label {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        max-width: 130px;
+        text-align: center;
     }
 </style>
