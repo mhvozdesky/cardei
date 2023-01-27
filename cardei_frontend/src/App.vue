@@ -62,5 +62,10 @@
         color:#333;
         font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Helvetica,Arial,sans-serif
     }
+
+    #app {
+        display: flex;
+        flex-direction: column;
+    }
  
 </style>
