@@ -44,5 +44,6 @@
 
     .rightDash {
         flex-grow: 3;
+        max-width: 60%;
     }
 </style>
