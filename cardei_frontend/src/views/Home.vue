@@ -34,10 +34,12 @@
         flex-grow: 0.3;
         background-color: #f4f4f7;
         padding: 10px;
+        max-width: 15%;
     }
 
     .middleDash {
         flex-grow: 1;
+        max-width: 25%;
     }
 
     .rightDash {
