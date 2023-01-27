@@ -42,6 +42,12 @@
         position: relative;
     }
 
+    @media (max-width: 900px) {
+        .right-header {
+            width: 145px;
+        }
+    }
+
     .right-header label {
         text-overflow: ellipsis;
         overflow: hidden;
