@@ -1,5 +1,26 @@
 <template>
-    <div>LeftDash</div>
+    <div class="content-LeftDash">
+        <div class="categories item-LeftDash">
+            <div class="title-item-LeftDash">
+                <div class="text-title-item-LeftDash">Категорії</div>
+                <div class="btn-title-item-LeftDash"></div>
+            </div>
+            <ul class="list-item-LeftDash">
+                <li>Логін</li>
+                <li>Пароль</li>
+            </ul>
+        </div>
+        <div class="tags item-LeftDash">
+            <div class="title-item-LeftDash">
+                <div class="text-title-item-LeftDash">Теги</div>
+                <div class="btn-title-item-LeftDash"></div>
+            </div>
+            <ul class="list-item-LeftDash">
+                <li>Фільми</li>
+                <li>Про головне</li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -9,5 +30,26 @@
 </script>
 
 <style>
- 
+    .item-LeftDash {
+        padding: 10px;
+    }
+
+    .list-item-LeftDash {
+        padding: 10px;
+    }
+
+    .btn-title-item-LeftDash {
+        width: 15px;
+        height: 15px;
+        background-image: url("@/assets/images/close.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin-left: 11px;
+        align-self: center;
+        cursor: pointer;
+    }
+
+    .title-item-LeftDash {
+        display: flex;
+    }
 </style>

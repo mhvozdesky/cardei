@@ -66,6 +66,18 @@
     #app {
         display: flex;
         flex-direction: column;
+        height: 100%;
+    }
+
+    li {
+        cursor: pointer;
+        margin: 5px;
+        padding: 5px;
+        overflow: hidden
+    }
+
+    li:hover {
+        background-color: #d0d1e5;
     }
  
 </style>

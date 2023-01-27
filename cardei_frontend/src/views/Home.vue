@@ -31,7 +31,9 @@
     }
 
     .leftDash {
-        flex-grow: 1;
+        flex-grow: 0.3;
+        background-color: #f4f4f7;
+        padding: 10px;
     }
 
     .middleDash {
@@ -39,6 +41,6 @@
     }
 
     .rightDash {
-        flex-grow: 2;
+        flex-grow: 3;
     }
 </style>
