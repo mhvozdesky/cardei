@@ -8,6 +8,9 @@
             </div>
             <div class="right-header">
                 <label>Maksym Hvozdetsky</label>
+                <div class="sub_menu">
+                    <div class="logout">Logout</div>
+                </div>
             </div>
         </header>
     </div>
@@ -54,5 +57,24 @@
         display: inline-block;
         max-width: 130px;
         text-align: center;
+    }
+
+    .sub_menu {
+        position: absolute;
+        top: 70px;
+        width: 90%;
+        background-color: #bfbfbf;
+        min-height: 60px;
+        z-index: 999;
+        display: none;
+    }
+
+    .sub_menu div {
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .right-header:hover > .sub_menu {
+        display: block;
     }
 </style>
