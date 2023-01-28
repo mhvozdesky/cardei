@@ -1,5 +1,5 @@
 <template>
-    <Nav />
+    <Nav v-if="! ['/register', '/login'].includes($route.path)" />
     <router-view/>
 </template>
 
