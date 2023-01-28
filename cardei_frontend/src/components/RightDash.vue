@@ -57,15 +57,15 @@
         -webkit-user-select: none;
         -moz-user-select: none;
         user-select: none;
-        background-color: #eee;
-        border: 1px solid #bdbdbd;
+        background-color: #4CAF50;
+        border: 1px solid #4CAF50;
         padding: 1px .75rem;
         font-size: 1rem;
         border-radius: .25rem;
         transition: background-color .15s ease-in-out;
     }
     .item-field__btn:hover {
-        background-color: #bdbdbd;
+        background-color: #60cd65;
     }
     .item-field__group .text-field__input {
         border-top-right-radius: 0;
@@ -78,6 +78,7 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         border-left-width: 0;
+        color: white;
     }
 
     .item-field {
@@ -98,6 +99,7 @@
 
     .work-area {
         flex-grow: 1;
+        background-color: #f4f4f7;
     }
 
     .item-dash {
@@ -111,6 +113,8 @@
     .item-field__input {
         text-overflow: ellipsis;
         width: 500px;
+        border: 0.5px solid #4caf50;
+        padding-left: 5px;
     }
 
     @media (max-width: 1130px) {
@@ -133,6 +137,7 @@
 
     .btn-set {
         display: flex;
+        background-color: #f4f4f7;
     }
 
     /* .btn {
@@ -149,16 +154,16 @@
         color: #fff; /* цвет текста */
         text-decoration: none; /* убирать подчёркивание у ссылок */
         user-select: none; /* убирать выделение текста */
-        background: #858585; /* фон кнопки */
+        background: #4CAF50; /* фон кнопки */
         padding: .7em 1.5em; /* отступ от текста */
         outline: none; /* убирать контур в Mozilla */
         width: 127px;
         margin: 5px;
     } 
     .btn:hover {
-        background: #9f9f9f; 
+        background: #60cd65; 
     } /* при наведении курсора мышки */
     .btn:active {
-        background: #5e5e5e; 
+        background: #409344; 
     } /* при нажатии */
 </style>

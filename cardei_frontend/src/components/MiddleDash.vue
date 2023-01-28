@@ -42,7 +42,7 @@
     }
 
     .list-MiddleDash li:nth-child(even) {
-        background: white;
+        background: #f4f4f7;
     }
 
     .list-MiddleDash li:nth-child(odd):hover,
@@ -65,12 +65,12 @@
     }
 
     .content-MiddleDash .btn:hover {
-        background-color: #bbb6b6 !important; 
+        background-color: #60cd65 !important; 
         border-radius: 50%;
         cursor: pointer;
     }
 
     .content-MiddleDash .btn:active {
-        background-color: #7f848d !important; 
+        background-color: #409344 !important; 
     } /* при нажатии */
 </style>

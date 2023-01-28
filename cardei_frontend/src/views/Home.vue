@@ -74,6 +74,7 @@
     .middleDash {
         flex-grow: 1;
         max-width: 25%;
+        background: #f4f4f7;
     }
 
     .rightDash {
@@ -83,6 +84,7 @@
 
     .choice-set {
         display: flex;
+        background-color: #f4f4f7;
     }
 
     .home-content {
@@ -95,7 +97,7 @@
         color: #fff; /* цвет текста */
         text-decoration: none; /* убирать подчёркивание у ссылок */
         user-select: none; /* убирать выделение текста */
-        background: #858585; /* фон кнопки */
+        background: #4CAF50; /* фон кнопки */
         padding: 4px 2px; /* отступ от текста */
         outline: none; /* убирать контур в Mozilla */
         width: 80px;
@@ -119,11 +121,11 @@
     }
 
     .choice-set div:hover {
-        background: #9f9f9f; 
+        background: #60cd65; 
     } /* при наведении курсора мышки */
 
     .choice-set div:active {
-        background: #5e5e5e; 
+        background: #409344; 
     } /* при нажатии */
 
     .mobile-home {
