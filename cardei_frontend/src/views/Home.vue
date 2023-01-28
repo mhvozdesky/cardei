@@ -1,8 +1,24 @@
 <template>
-    <div class="home">
-        <LeftDash class="leftDash" />
-        <MiddleDash class="middleDash" />
-        <RightDash class="rightDash" />
+    <div class="home-content">
+        <div class="choice-set">
+            <div @click="comp_change(0)"><span>Фільтр</span></div>
+            <div @click="comp_change(1)"><span>Елементи</span></div>
+            <div @click="comp_change(2)"><span>Вікно</span></div>
+        </div>
+        <div class="home" v-if="width>=750">
+            <LeftDash class="leftDash" />
+            <MiddleDash class="middleDash" />
+            <RightDash class="rightDash" />
+        </div>
+        <div class="mobile-home" v-else-if="comp == 0">
+            <LeftDash class="leftDash" />
+        </div>
+        <div class="mobile-home" v-else-if="comp == 1">
+            <MiddleDash class="middleDash" />
+        </div>
+        <div class="mobile-home" v-else-if="comp == 2">
+            <RightDash class="rightDash" />
+        </div>
     </div>
 </template>
 
@@ -16,6 +32,24 @@
             LeftDash,
             MiddleDash,
             RightDash
+        },
+        data() {
+            return {
+                width: 0,
+                comp: 1
+            }
+        },
+        methods: {
+            updateWidth() {
+                this.width = window.innerWidth;
+            },
+            comp_change(e) {
+                this.comp = e;
+            }
+        },
+        created() {
+            this.width = window.innerWidth;
+            window.addEventListener('resize', this.updateWidth);
         }
     }
 </script>
@@ -45,5 +79,54 @@
     .rightDash {
         flex-grow: 3;
         max-width: 60%;
+    }
+
+    .choice-set {
+        display: flex;
+    }
+
+    .home-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .choice-set div {
+        color: #fff; /* цвет текста */
+        text-decoration: none; /* убирать подчёркивание у ссылок */
+        user-select: none; /* убирать выделение текста */
+        background: #858585; /* фон кнопки */
+        padding: 4px 2px; /* отступ от текста */
+        outline: none; /* убирать контур в Mozilla */
+        width: 80px;
+        margin: 5px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    @media (max-width: 750px) {
+        .choice-set div {
+            display: flex;
+        }
+
+        .leftDash, .middleDash, .rightDash {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .choice-set div:hover {
+        background: #9f9f9f; 
+    } /* при наведении курсора мышки */
+
+    .choice-set div:active {
+        background: #5e5e5e; 
+    } /* при нажатии */
+
+    .mobile-home {
+        height: 100%;
     }
 </style>

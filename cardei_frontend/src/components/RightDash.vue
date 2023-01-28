@@ -6,21 +6,21 @@
                     <label class="item-field__label" for="name">Назва</label>
                     <div class="item-field__group">
                         <input class="item-field__input" type="search" id="name" name="name">
-                        <button class="item-field__btn" type="button">Coppy</button>
+                        <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
                 <div class="item-field name-field">
                     <label class="item-field__label" for="name">Назва</label>
                     <div class="item-field__group">
                         <input class="item-field__input" type="search" id="name" name="name">
-                        <button class="item-field__btn" type="button">Coppy</button>
+                        <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
                 <div class="item-field name-field">
                     <label class="item-field__label" for="name">Назва</label>
                     <div class="item-field__group">
                         <input class="item-field__input" type="search" id="name" name="name">
-                        <button class="item-field__btn" type="button">Coppy</button>
+                        <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
             </div>
@@ -113,6 +113,24 @@
         width: 500px;
     }
 
+    @media (max-width: 1130px) {
+        .item-field__input {
+            width: 355px;
+        }
+    }
+
+    @media (max-width: 870px) {
+        .item-field__input {
+            width: 260px;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .item-field__input {
+            width: 195px;
+        }
+    }
+
     .btn-set {
         display: flex;
     }
@@ -134,7 +152,7 @@
         background: #858585; /* фон кнопки */
         padding: .7em 1.5em; /* отступ от текста */
         outline: none; /* убирать контур в Mozilla */
-        width: 80px;
+        width: 127px;
         margin: 5px;
     } 
     .btn:hover {
