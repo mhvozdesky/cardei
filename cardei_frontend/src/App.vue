@@ -4,11 +4,24 @@
 </template>
 
 <script>
+    import axios from 'axios';
     import Nav from '@/components/Nav';
     export default {
         name: 'App',
         components: {
             Nav
+        },
+        methods: {
+
+        },
+        computed: {
+            env() {
+                return process.env.VUE_APP_URL_BACK
+            }
+        },
+        mounted() {
+        },
+        created() {
         }
     }
 </script>

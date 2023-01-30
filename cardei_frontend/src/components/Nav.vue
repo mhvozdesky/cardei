@@ -17,8 +17,21 @@
 </template>
 
 <script>
+    import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
     export default {
-        name: "Nav"
+        name: "Nav",
+        computed: {
+            ...mapState({
+                user: state => state.user
+            }),
+            ...mapActions({
+                //fetch_user: 'fetch_user'
+            }),
+            fetch_user(){
+                console.log(this.user)
+                return this.user
+            }
+        }
     }
 </script>
 

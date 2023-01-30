@@ -26,6 +26,7 @@
     import LeftDash from '@/components/LeftDash';
     import MiddleDash from '@/components/MiddleDash';
     import RightDash from '@/components/RightDash';
+    import axios from 'axios';
     export default {
         name: 'App',
         components: {
@@ -36,7 +37,8 @@
         data() {
             return {
                 width: 0,
-                comp: 1
+                comp: 1,
+                user: null
             }
         },
         methods: {
@@ -45,11 +47,43 @@
             },
             comp_change(e) {
                 this.comp = e;
+            },
+            async get_profile() {
+                
+                const url = process.env.VUE_APP_PROTOCOL_BACK + process.env.VUE_APP_URL_BACK + 'profile/';
+                const options = {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json;charset=UTF-8",
+                        }
+                    };
+                
+                try {
+                    const response = await fetch(url, options);
+                    const status = response.status
+                    if (status == 403) {
+                        this.$router.push({name: 'Login'})
+                    } else if (response.ok) {
+                        //
+                    }
+                    
+                } catch(e) {
+                    console.log('error fetch')
+                }
+            }
+        },
+        computed: {
+            env() {
+                return process.env
             }
         },
         created() {
             this.width = window.innerWidth;
             window.addEventListener('resize', this.updateWidth);
+        },
+        mounted() {
+            this.get_profile();
         }
     }
 </script>
