@@ -70,6 +70,7 @@
                     
                 } catch(e) {
                     console.log('error fetch')
+                    this.$router.push({name: 'Login'})
                 }
             }
         },
