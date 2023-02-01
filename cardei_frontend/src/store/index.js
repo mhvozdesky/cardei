@@ -2,7 +2,9 @@ import { createStore } from "vuex";
 
 export default createStore({
     state: () => ({
-        user: null
+        user: {
+            email: null
+        }
     }),
     getters: {
         getServerURL(state) {
@@ -13,6 +15,9 @@ export default createStore({
     mutations: {
         // Мутации, это функции, в нутри которых мы меняем значения
         // какого-то поля в состоянии
+        setUser(state, user) {
+            state.user = user;
+        }
 
         
     },

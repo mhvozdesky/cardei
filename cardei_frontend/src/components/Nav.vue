@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="right-header">
-                <label>Maksym Hvozdetsky</label>
+                <label>{{ this.$store.state.user.email }}</label>
                 <div class="sub_menu">
                     <div @click="logout" class="logout">Logout</div>
                 </div>

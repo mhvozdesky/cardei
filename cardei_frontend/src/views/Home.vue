@@ -38,7 +38,6 @@
             return {
                 width: 0,
                 comp: 1,
-                data: null,
                 global_error: false
             }
         },
@@ -62,7 +61,7 @@
                         }
                     )
                     .then((response) => {
-                        this.data = response.data
+                        this.$store.commit('setUser', response.data)
                     })
                     .catch((error) => {
                         this.$router.push({name: 'Login'})
@@ -75,6 +74,10 @@
         computed: {
             env() {
                 return process.env
+            },
+
+            user() {
+                return this.$store.state.user
             }
         },
         created() {
