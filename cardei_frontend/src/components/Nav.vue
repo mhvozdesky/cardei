@@ -1,7 +1,7 @@
 <template>
     <div>
         <header>
-            <div class="left-header">
+            <div @click="$router.push({name: 'Home'})" class="left-header">
                 <div class="content-left-header">
                     <div class="content-left-header__text">Cardei</div> 
                 </div>

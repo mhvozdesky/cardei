@@ -1,6 +1,7 @@
 import Home from '@/views/Home';
 import Register from '@/views/Register'
 import Login from '@/views/Login'
+import PageNotFound from '@/views/PageNotFound'
 import {createRouter, createWebHistory} from 'vue-router';
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
         path: '/login',
         component: Login,
         name: 'Login'
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        component: PageNotFound,
+        name: 'PageNotFound'
     }
 ]
 
