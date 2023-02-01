@@ -1,10 +1,12 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
     state: () => ({
         user: {
             email: null
-        }
+        },
+        masterpass: 'test masterpass'
     }),
     getters: {
         getServerURL(state) {
@@ -17,6 +19,9 @@ export default createStore({
         // какого-то поля в состоянии
         setUser(state, user) {
             state.user = user;
+        },
+        setMasterpass(state, masterpass) {
+            state.masterpass = masterpass;
         }
 
         
@@ -32,6 +37,8 @@ export default createStore({
         // это изолираванный кусок состояния. Со своими getters, mutations и actions
         // все модули подключаются в один глобальный стор
 
-    }
+    },
+
+    plugins: [createPersistedState({ storage: window.sessionStorage })]
 
 })

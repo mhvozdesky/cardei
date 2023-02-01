@@ -36,7 +36,8 @@
                     )
                     .then((response) => {
                         if (response.status < 300){
-                            this.$router.push({name: 'Login'})
+                            window.sessionStorage.clear();
+                            this.$router.push({name: 'Login'});
                         }
                     })
                     .catch((error) => {

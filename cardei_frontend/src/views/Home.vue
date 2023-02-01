@@ -20,6 +20,7 @@
             <RightDash class="rightDash" />
         </div>
     </div>
+    <div>{{ this.$store.state.masterpass }}</div>
 </template>
 
 <script>

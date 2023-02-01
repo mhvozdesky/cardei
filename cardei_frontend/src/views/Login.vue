@@ -85,6 +85,7 @@
                         }
                     )
                     .then((response) => {
+                        this.$store.commit('setMasterpass', this.password.text)
                         this.$router.push({name: 'Home'})
                     })
                     .catch((error) => {
