@@ -6,16 +6,37 @@
             <hr>
 
             <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="email" required>
+            <ul v-if="email.errors.length > 0" class="error-list">
+                <li v-for="error in email.errors">
+                    {{error}}
+                </li>
+            </ul>
+            <input v-model="email.text" type="text" placeholder="Enter Email" name="email" required>
 
             <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
+            <ul v-if="password.errors.length > 0" class="error-list">
+                <li v-for="error in password.errors">
+                    {{error}}
+                </li>
+            </ul>
+            <input v-model="password.text" type="password" placeholder="Enter Password" name="psw" required>
 
             <label for="psw-repeat"><b>Repeat Password</b></label>
-            <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+            <ul v-if="re_password.errors.length > 0" class="error-list">
+                <li v-for="error in re_password.errors">
+                    {{error}}
+                </li>
+            </ul>
+            <input v-model="re_password.text" type="password" placeholder="Repeat Password" name="psw-repeat" required>
             <hr>
 
-            <button type="submit" class="registerbtn">Register</button>
+            <ul v-if="common_error.length > 0" class="error-list">
+                <li v-for="error in common_error">
+                    {{error}}
+                </li>
+            </ul>
+
+            <button @click="register" type="submit" class="registerbtn">Register</button>
         </div>
         
         <div class="container signin">
@@ -25,8 +46,86 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
-        name: "Register"
+        name: "Register",
+        data() {
+            return {
+                email: {
+                    text: null,
+                    errors: []
+                },
+                password: {
+                    text: null,
+                    errors: []
+                },
+                re_password: {
+                    text: null,
+                    errors: []
+                },
+                common_error: []
+            }
+        },
+        methods: {
+            register() {
+                this.clear_errors()
+                const url = 'api/v1/account/reg/';
+
+                const data = {
+                    email: this.email.text,
+                    password: this.password.text,
+                    re_password: this.password.text
+                }
+
+                const headers = {
+                        "Content-Type": "application/json",
+                        "masterpass": "qwerty"
+                    }
+
+                if (document.cookie) {
+                    headers['x-csrftoken'] = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1] 
+                }
+                
+                try {                    
+                    axios.post(
+                        url,
+                        data,
+                        {
+                            withCredentials: true,
+                            headers: headers
+                        }
+                    )
+                    .then((response) => {
+                        this.$router.push({name: 'Login'})
+                    })
+                    .catch((error) => {
+                        if (typeof error.response.data.email != 'undefined') {
+                            this.email.errors = error.response.data.email
+                        }
+                        if (typeof error.response.data.password != 'undefined') {
+                            this.password.errors = error.response.data.password
+                        }
+                        if (typeof error.response.data.re_password != 'undefined') {
+                            this.re_password.errors = error.response.data.re_password
+                        }
+                        if (typeof error.response.data.non_field_errors != 'undefined') {
+                            this.common_error = error.response.data.non_field_errors
+                        }
+                        if (typeof error.response.data.detail != 'undefined') {
+                            console.log(error.response.data.detail)
+                        }
+                    })  
+                } catch(e) {
+                    console.log(e)
+                }
+            },
+            clear_errors() {
+                this.email.errors = []
+                this.password.errors = []
+                this.re_password.errors = []
+                this.common_error = []
+            }
+        }
     }
 </script>
 
