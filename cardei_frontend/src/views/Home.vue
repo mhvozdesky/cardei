@@ -1,5 +1,5 @@
 <template>
-    <div class="home-content">
+    <div v-if="!global_error" class="home-content">
         <div class="choice-set">
             <div @click="comp_change(0)"><span>Фільтр</span></div>
             <div @click="comp_change(1)"><span>Елементи</span></div>
@@ -38,7 +38,8 @@
             return {
                 width: 0,
                 comp: 1,
-                user: null
+                data: null,
+                global_error: false
             }
         },
         methods: {
@@ -48,29 +49,26 @@
             comp_change(e) {
                 this.comp = e;
             },
-            async get_profile() {
-                
-                const url = process.env.VUE_APP_PROTOCOL_BACK + process.env.VUE_APP_URL_BACK + 'profile/';
-                const options = {
-                        method: "GET",
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json;charset=UTF-8",
-                        }
-                    };
-                
+            get_profile() {
+                const url = '/api/v1/profile/';
                 try {
-                    const response = await fetch(url, options);
-                    const status = response.status
-                    if (status == 403) {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        this.data = response.data
+                    })
+                    .catch((error) => {
                         this.$router.push({name: 'Login'})
-                    } else if (response.ok) {
-                        //
-                    }
-                    
-                } catch(e) {
-                    console.log('error fetch')
-                    this.$router.push({name: 'Login'})
+                    })
+                } catch {
+                    this.global_error = true
                 }
             }
         },

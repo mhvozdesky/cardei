@@ -9,7 +9,7 @@
             <div class="right-header">
                 <label>Maksym Hvozdetsky</label>
                 <div class="sub_menu">
-                    <div class="logout">Logout</div>
+                    <div @click="logout" class="logout">Logout</div>
                 </div>
             </div>
         </header>
@@ -18,8 +18,35 @@
 
 <script>
     import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+    import axios from 'axios';
     export default {
         name: "Nav",
+        methods: {
+            logout() {
+                const url = 'api/v1/account/logout/';
+                try {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        if (response.status < 300){
+                            this.$router.push({name: 'Login'})
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data)
+                    })
+                } catch {
+                    console.log('error logout')
+                }
+            }
+        },
         computed: {
             ...mapState({
                 user: state => state.user

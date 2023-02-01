@@ -93,5 +93,10 @@
     li:hover {
         background-color: #d0d1e5;
     }
+
+    .error-list {
+        color: red;
+        font-size: 12px;
+    }
  
 </style>

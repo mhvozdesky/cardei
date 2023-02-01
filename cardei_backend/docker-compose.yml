@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    env_file:
+      - ../local_run/env.dev
+    depends_on:
+      - db_cardei
+  db_cardei:
+    image: postgres:14.5
+    env_file:
+      - ../local_run/env.dev
+    volumes:
+      - ../local_run/data_db:/var/lib/postgresql/data
+      - ../local_run/dump:/dumps
+  vue:
+    build:
+      context: ../cardei_frontend/
+      dockerfile: Dockerfile
+    volumes:
+      - ../cardei_frontend/:/app
+    ports:
+      - '8080:8080'
+
+
