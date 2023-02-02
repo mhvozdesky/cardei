@@ -2,7 +2,14 @@
     <div class="content-MiddleDash">
         <div class="button-area">
             <div class="btn-set">
-                <div class="btn add-btn"></div>
+                <div class="add-set">
+                    <div class="btn add-btn"></div>
+                    <ul v-if="categorylist" class="ul-add">
+                        <li v-for="category in categorylist" :key="category.id">
+                            {{ category.title }}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <ul class="list-MiddleDash">
@@ -18,7 +25,8 @@
 
 <script>
     export default {
-        name: "MiddleDash"
+        name: "MiddleDash",
+        props: ['categorylist']
     }
 </script>
 
@@ -73,4 +81,15 @@
     .content-MiddleDash .btn:active {
         background-color: #409344 !important; 
     } /* при нажатии */
+
+    .ul-add {
+        position: relative;
+        background-color: #b7b9b7;
+        padding: 5px;
+        display: none;
+    }
+
+    .add-set:hover > .ul-add {
+        display: block;
+    }
 </style>

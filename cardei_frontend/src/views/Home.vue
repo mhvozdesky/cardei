@@ -7,14 +7,14 @@
         </div>
         <div class="home" v-if="width>=750">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
-            <MiddleDash class="middleDash" />
+            <MiddleDash :categorylist="categorylist" class="middleDash" />
             <RightDash class="rightDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 0">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 1">
-            <MiddleDash class="middleDash" />
+            <MiddleDash :categorylist="categorylist" class="middleDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 2">
             <RightDash class="rightDash" />
