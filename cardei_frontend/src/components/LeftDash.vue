@@ -5,8 +5,10 @@
                 <div class="text-title-item-LeftDash">Категорії</div>
                 <div class="btn-title-item-LeftDash"></div>
             </div>
-            <ul class="list-item-LeftDash">
-                <li>Логін</li>
+            <ul v-if="categorylist" class="list-item-LeftDash">
+                <li v-for="category in categorylist" :key="category.id">
+                    {{category.title}}
+                </li>
                 <li>Пароль</li>
             </ul>
         </div>
@@ -15,9 +17,10 @@
                 <div class="text-title-item-LeftDash">Теги</div>
                 <div class="btn-title-item-LeftDash"></div>
             </div>
-            <ul class="list-item-LeftDash">
-                <li>Фільми</li>
-                <li>Про головне</li>
+            <ul v-if="taglist" class="list-item-LeftDash">
+                <li v-for="tag in taglist" :key="tag.id">
+                    {{ tag.title }}
+                </li>
             </ul>
         </div>
     </div>
@@ -25,7 +28,13 @@
 
 <script>
     export default {
-        name: "LeftDash"
+        name: "LeftDash",
+        data() {
+            return {
+                data: null
+            }
+        },
+        props: ['categorylist', 'taglist']
     }
 </script>
 

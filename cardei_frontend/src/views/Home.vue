@@ -6,12 +6,12 @@
             <div @click="comp_change(2)"><span>Вікно</span></div>
         </div>
         <div class="home" v-if="width>=750">
-            <LeftDash class="leftDash" />
+            <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
             <MiddleDash class="middleDash" />
             <RightDash class="rightDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 0">
-            <LeftDash class="leftDash" />
+            <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 1">
             <MiddleDash class="middleDash" />
@@ -20,7 +20,7 @@
             <RightDash class="rightDash" />
         </div>
     </div>
-    <div>{{ this.$store.state.masterpass }}</div>
+    <!-- <div>{{ this.$store.state.masterpass }}</div> -->
 </template>
 
 <script>
@@ -39,7 +39,9 @@
             return {
                 width: 0,
                 comp: 1,
-                global_error: false
+                global_error: false,
+                categorylist: null,
+                taglist: null
             }
         },
         methods: {
@@ -70,6 +72,50 @@
                 } catch {
                     this.global_error = true
                 }
+            },
+            get_categorylist() {
+                const url = '/api/v1/categorylist/';
+                try {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        this.categorylist = response.data
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                } catch {
+                    console.log('error categorylist')
+                }
+            },
+            get_taglist() {
+                const url = '/api/v1/taglist/';
+                try {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        this.taglist = response.data
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                } catch {
+                    console.log('error taglist')
+                }
             }
         },
         computed: {
@@ -87,6 +133,7 @@
         },
         mounted() {
             this.get_profile();
+            this.get_categorylist();
         }
     }
 </script>
