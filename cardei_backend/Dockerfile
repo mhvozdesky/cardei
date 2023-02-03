@@ -18,28 +18,3 @@ COPY . .
 #RUN chmod 777 entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
-# CMD sleep 10000
-
-
-
-# FROM python:3.10
-
-# ENV PYTHONDONTWRITEBYTECODE 1
-# ENV PYTHONUNBUFFERED 1
-
-# WORKDIR /app
-
-# COPY ./requirements.txt .
-
-# RUN apt-get update && apt-get -y dist-upgrade
-# RUN apt-get -y install build-essential libssl-dev libffi-dev libblas3 libc6 liblapack3 gcc python3-dev python3-pip cython3
-# RUN apt-get -y install python3-numpy python3-scipy 
-# RUN apt install -y netcat
-
-# RUN pip install -r requirements.txt
-
-# COPY . .
-
-# RUN chmod 777 entrypoint.sh
-
-# ENTRYPOINT ["/app/entrypoint.sh"]

@@ -161,28 +161,5 @@ DJOSER = {
     },
 }
 
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOW_CREDENTIALS = True
-# from corsheaders.defaults import default_headers
-# CORS_ALLOW_HEADERS = default_headers + (
-#     'Access-Control-Allow-Origin',
-# )
-# CORS_ALLOWED_ORIGIN_REGEXES = [
-#     'http://localhost:8080/',
-# ]
-
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SAMESITE = 'None'
-# SESSION_COOKIE_SAMESITE = 'None'
-
-# CSRF_TRUSTED_ORIGINS = [
-#     'http://127.0.0.1',
-#     'http://localhost',
-#     'http://localhost:8080',
-#     'http://127.0.0.1:8080',
-# ]
-
 CARDEI_CSRF_TRUSTED_ORIGINS = os.environ.get('CARDEI_CSRF_TRUSTED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = [i.strip() for i in CARDEI_CSRF_TRUSTED_ORIGINS.split(',')]

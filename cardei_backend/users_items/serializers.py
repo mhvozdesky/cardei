@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from users_items import models
+from constants.constants import items_fields
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -18,6 +19,11 @@ class TagListSerializer(serializers.ModelSerializer):
 
 
 class CategoryListSerializer(serializers.ModelSerializer):
+    field_set = serializers.SerializerMethodField()
+
+    def get_field_set(self, obj):
+        return items_fields[obj.title]
+
     class Meta:
         model = models.Category
         fields = '__all__'
