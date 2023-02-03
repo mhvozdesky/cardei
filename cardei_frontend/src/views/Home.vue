@@ -20,7 +20,6 @@
             <RightDash :right_elem="right_elem" class="rightDash" />
         </div>
     </div>
-    <div>{{ this.$store.state.masterpass }}</div>
 </template>
 
 <script>
