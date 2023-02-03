@@ -6,7 +6,7 @@ export default createStore({
         user: {
             email: null
         },
-        masterpass: 'test masterpass'
+        masterpass: ''
     }),
     getters: {
         getServerURL(state) {

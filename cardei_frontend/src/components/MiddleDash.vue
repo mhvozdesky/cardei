@@ -12,13 +12,8 @@
                 </div>
             </div>
         </div>
-        <ul class="list-MiddleDash">
-            <li class="item-MiddleDash">Реєстрація на filmix</li>
-            <li class="item-MiddleDash">Нові замітки</li>
-            <li class="item-MiddleDash">Реєстрація на filmix</li>
-            <li class="item-MiddleDash">Реєстрація на filmix</li>
-            <li class="item-MiddleDash">Нові замітки</li>
-            <li class="item-MiddleDash">Реєстрація на filmix</li>
+        <ul v-if="element_list" class="list-MiddleDash">
+            <li v-for="element in element_list" class="item-MiddleDash" @click="this.$emit('show_elem', element.id)">{{ element.title }}</li>
         </ul>
     </div>
 </template>
@@ -26,7 +21,7 @@
 <script>
     export default {
         name: "MiddleDash",
-        props: ['categorylist']
+        props: ['categorylist', 'element_list']
     }
 </script>
 

@@ -2,24 +2,24 @@
     <div class="content-RightDash">
         <div class="work-area">
             <div class="item-dash">
-                <div class="item-field name-field">
+                <div v-if="fields_element.includes('title')" class="item-field name-field">
                     <label class="item-field__label" for="name">Назва</label>
                     <div class="item-field__group">
-                        <input class="item-field__input" type="search" id="name" name="name">
+                        <input v-model="element.title" class="item-field__input" type="search" id="name" name="name" readonly>
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
-                <div class="item-field name-field">
-                    <label class="item-field__label" for="name">Назва</label>
+                <div v-if="fields_element.includes('login')" class="item-field login-field">
+                    <label class="item-field__label" for="login">Логін</label>
                     <div class="item-field__group">
-                        <input class="item-field__input" type="search" id="name" name="name">
+                        <input v-model="element.login" class="item-field__input" type="search" id="login" name="login" readonly>
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
-                <div class="item-field name-field">
-                    <label class="item-field__label" for="name">Назва</label>
+                <div v-if="fields_element.includes('login')" class="item-field login-field">
+                    <label class="item-field__label" for="login">Логін</label>
                     <div class="item-field__group">
-                        <input class="item-field__input" type="search" id="name" name="name">
+                        <input v-model="element.login" class="item-field__input" type="search" id="login" name="login" readonly>
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
@@ -36,8 +36,116 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
-        name: "RightDash"
+        name: "RightDash",
+        data() {
+            return {
+                dictionary: {
+                    "title": "Назва",
+                    "login": "Логін",
+                    "password": "Пароль",
+                    "site": "Сайт",
+                    "notes": "Замітка",
+                    "tag": "Теги",
+                    "date_creation": "Дата створення",
+                    "date_update": "Дата модифікації",
+                    "category": "Категорія",
+                    "text": "Текст",
+                    "owner_name": "Власник",
+                    "card_number": "Номер карти",
+                    "year": "Рік",
+                    "month": "Місяць",
+                    "cvv": "cvv",
+                    "pin_code": "Пін код"
+                },
+                element: {
+                    id: null,
+                    title: null,
+                    login: null,
+                    password: null,
+                    notes: null,
+                    tag: null,
+                    date_creation: null,
+                    date_update: null,
+                    category: null,
+                    owner_name: null,
+                    card_number: null,
+                    year: null,
+                    month: null,
+                    cvv: null,
+                    pin_code: null,
+                    site: null,
+                    text: null,
+                },
+                fields_element: []
+            }
+        },
+        props: ['right_elem'],
+        methods: {
+            fetch_elem() {
+                if (this.right_elem) {
+                    const url = '/api/v1/items/' + this.right_elem + '/';
+                    try {
+                        axios.get(
+                            url,
+                            {
+                                withCredentials: true,
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Masterpass": 'qwerty'
+                                }
+                            }
+                        )
+                        .then((response) => {
+                            this.element = response.data
+                            this.fill_fields_element();
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                    } catch {
+                        console.log('error fetch_elem')
+                    }
+                }
+            },
+            fill_fields_element() {
+
+                if (this.element) {
+                    const data = []
+                    for (let i in this.element) {
+                        if (typeof this.dictionary[i] != 'undefined') {
+                            data.push(i)
+                        }
+                    }
+                    this.fields_element = data;
+                }
+
+            }
+        },
+        mounted() {
+            this.fetch_elem();
+        },
+        watch: {
+            right_elem() {
+                this.fetch_elem();
+            }
+        },
+        computed: {
+            // field_set() {
+            //     if (this.element) {
+            //         console.log(this.element)
+            //         const data = []
+            //         for (field in this.element) {
+            //             if (typeof this.dictionary[field] != 'undefined') {
+            //                 console.log(this.dictionary[field])
+            //                 data.push(field)
+            //             }
+            //         }
+            //         return data;
+            //     }
+            // }
+        }
     }
 </script>
 

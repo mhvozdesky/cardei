@@ -7,17 +7,17 @@
         </div>
         <div class="home" v-if="width>=750">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
-            <MiddleDash :categorylist="categorylist" class="middleDash" />
-            <RightDash class="rightDash" />
+            <MiddleDash :categorylist="categorylist" :element_list="element_list" class="middleDash" @show_elem="show_elem" />
+            <RightDash :right_elem="right_elem" class="rightDash" ref="right_dash"/>
         </div>
         <div class="mobile-home" v-else-if="comp == 0">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 1">
-            <MiddleDash :categorylist="categorylist" class="middleDash" />
+            <MiddleDash :categorylist="categorylist" :element_list="element_list" class="middleDash" @show_elem="show_elem" />
         </div>
         <div class="mobile-home" v-else-if="comp == 2">
-            <RightDash class="rightDash" />
+            <RightDash :right_elem="right_elem" class="rightDash" />
         </div>
     </div>
     <!-- <div>{{ this.$store.state.masterpass }}</div> -->
@@ -41,7 +41,9 @@
                 comp: 1,
                 global_error: false,
                 categorylist: null,
-                taglist: null
+                taglist: null,
+                element_list: null,
+                right_elem: null
             }
         },
         methods: {
@@ -50,6 +52,10 @@
             },
             comp_change(e) {
                 this.comp = e;
+            },
+            show_elem(id_elem) {
+                this.right_elem = id_elem;
+                //this.$refs.right_dash.fetch_elem()
             },
             get_profile() {
                 const url = '/api/v1/profile/';
@@ -116,6 +122,30 @@
                 } catch {
                     console.log('error taglist')
                 }
+            },
+            get_element_list() {
+                const url = '/api/v1/items/';
+                try {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json",
+                                //"Masterpass": this.$store.state.masterpass
+                                "Masterpass": 'qwerty'
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        this.element_list = response.data
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                } catch {
+                    console.log('error get_element_list')
+                }
             }
         },
         computed: {
@@ -134,6 +164,7 @@
         mounted() {
             this.get_profile();
             this.get_categorylist();
+            this.get_element_list();
         }
     }
 </script>
