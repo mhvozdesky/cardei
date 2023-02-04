@@ -5,7 +5,7 @@
                 <div class="add-set">
                     <div class="btn add-btn"></div>
                     <ul v-if="categorylist" class="ul-add">
-                        <li v-for="category in categorylist" :key="category.id">
+                        <li v-for="category in categorylist" :key="category.id" @click="this.$emit('add_element', category.id)">
                             {{ category.title }}
                         </li>
                     </ul>

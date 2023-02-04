@@ -7,17 +7,43 @@
         </div>
         <div class="home" v-if="width>=750">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
-            <MiddleDash :categorylist="categorylist" :element_list="element_list" class="middleDash" @show_elem="show_elem" />
-            <RightDash :right_elem="right_elem" class="rightDash" ref="right_dash"/>
+            <MiddleDash 
+                :categorylist="categorylist"
+                :element_list="element_list"
+                class="middleDash"
+                @show_elem="show_elem"
+                @add_element="add_element"
+            />
+            <RightDash 
+                :right_elem="right_elem"
+                :categorylist="categorylist"
+                :category_id="category_id"
+                :new_elem="new_elem"
+                @cansel_new_elem="cansel_new_elem"
+                class="rightDash"
+                ref="right_dash"
+            />
         </div>
         <div class="mobile-home" v-else-if="comp == 0">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
         </div>
         <div class="mobile-home" v-else-if="comp == 1">
-            <MiddleDash :categorylist="categorylist" :element_list="element_list" class="middleDash" @show_elem="show_elem" />
+            <MiddleDash
+                :categorylist="categorylist"
+                :element_list="element_list"
+                class="middleDash"
+                @show_elem="show_elem"
+                @add_element="add_element"
+            />
         </div>
         <div class="mobile-home" v-else-if="comp == 2">
-            <RightDash :right_elem="right_elem" class="rightDash" />
+            <RightDash 
+                :right_elem="right_elem"
+                :category_id="category_id"
+                :new_elem="new_elem"
+                @cansel_new_elem="cansel_new_elem"
+                class="rightDash"
+            />
         </div>
     </div>
 </template>
@@ -42,7 +68,9 @@
                 categorylist: null,
                 taglist: null,
                 element_list: null,
-                right_elem: null
+                right_elem: null,
+                category_id: null,
+                new_elem: false
             }
         },
         methods: {
@@ -54,7 +82,15 @@
             },
             show_elem(id_elem) {
                 this.right_elem = id_elem;
+                this.category_id = this.element_list.filter((obj) => obj['id'] == id_elem)[0].category
                 //this.$refs.right_dash.fetch_elem()
+            },
+            cansel_new_elem() {
+                this.new_elem = false
+            },
+            add_element(id_cat) {
+                this.category_id = id_cat;
+                this.new_elem = true;
             },
             get_profile() {
                 const url = '/api/v1/profile/';

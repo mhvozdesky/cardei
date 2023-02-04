@@ -2,24 +2,10 @@
     <div class="content-RightDash">
         <div class="work-area">
             <div class="item-dash">
-                <div v-if="fields_element.includes('title')" class="item-field name-field">
-                    <label class="item-field__label" for="name">Назва</label>
+                <div v-if="element_object" v-for="element in Object.keys(element_object)" class="item-field name-field">
+                    <label class="item-field__label" for="name">{{ element }}</label>
                     <div class="item-field__group">
-                        <input v-model="element.title" class="item-field__input" type="search" id="name" name="name" readonly>
-                        <button class="item-field__btn" type="button">Copy</button>
-                    </div>
-                </div>
-                <div v-if="fields_element.includes('login')" class="item-field login-field">
-                    <label class="item-field__label" for="login">Логін</label>
-                    <div class="item-field__group">
-                        <input v-model="element.login" class="item-field__input" type="search" id="login" name="login" readonly>
-                        <button class="item-field__btn" type="button">Copy</button>
-                    </div>
-                </div>
-                <div v-if="fields_element.includes('login')" class="item-field login-field">
-                    <label class="item-field__label" for="login">Логін</label>
-                    <div class="item-field__group">
-                        <input v-model="element.login" class="item-field__input" type="search" id="login" name="login" readonly>
+                        <input v-model="element_object[element]['text']" class="item-field__input" type="search" id="name" name="name" v-bind:readonly="readonly">
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
@@ -27,11 +13,14 @@
         </div>
         <div class="button-area">
             <div class="btn-set">
-                <div class="btn edit-btn">Редагувати</div>
+                <div @click="edit_elem" class="btn edit-btn">Редагувати</div>
                 <div class="btn save-btn">Зберегти</div>
                 <div class="btn delete-btn">Видалити</div>
             </div>
         </div>
+
+        <!-- <div>{{ this.element }}</div>
+        <div>{{ this.right_elem }}</div> -->
     </div>
 </template>
 
@@ -41,6 +30,9 @@
         name: "RightDash",
         data() {
             return {
+                unnecessary_fields: ['id', 'user', 'category'],
+                element_category: null,
+                readonly: true,
                 dictionary: {
                     "title": "Назва",
                     "login": "Логін",
@@ -59,29 +51,12 @@
                     "cvv": "cvv",
                     "pin_code": "Пін код"
                 },
-                element: {
-                    id: null,
-                    title: null,
-                    login: null,
-                    password: null,
-                    notes: null,
-                    tag: null,
-                    date_creation: null,
-                    date_update: null,
-                    category: null,
-                    owner_name: null,
-                    card_number: null,
-                    year: null,
-                    month: null,
-                    cvv: null,
-                    pin_code: null,
-                    site: null,
-                    text: null,
-                },
-                fields_element: []
+                element: {},
+                element_object: null,
+                field_set: []
             }
         },
-        props: ['right_elem'],
+        props: ['right_elem', 'categorylist', 'category_id', 'new_elem'],
         methods: {
             fetch_elem() {
                 if (this.right_elem) {
@@ -98,8 +73,7 @@
                             }
                         )
                         .then((response) => {
-                            this.element = response.data
-                            this.fill_fields_element();
+                            this.element = response.data;
                         })
                         .catch((error) => {
                             console.log(error)
@@ -109,26 +83,79 @@
                     }
                 }
             },
-            fill_fields_element() {
+            fill_field_set() {
+                const field_set = this.categorylist.filter((obj) => obj['id'] == this.category_id)[0]['field_set'];
+                this.field_set = field_set.filter((obj) => ! this.unnecessary_fields.includes(obj));
+            },
+            create_element_object() {
+                // let b = []
+                // for (let i in this.field_set) {
+                //     let a = {}
+                //     a[this.field_set[i]] = {text: '', vig: null}
+                //     b.push(a)
+                // }
 
-                if (this.element) {
-                    const data = []
-                    for (let i in this.element) {
-                        if (typeof this.dictionary[i] != 'undefined') {
-                            data.push(i)
-                        }
-                    }
-                    this.fields_element = data;
+                // this.element_object = b
+
+                // let b = {}
+                // for (let i in this.field_set) {
+                //     b[this.field_set[i]] = {text: '', widget: null}
+                // }
+
+                // this.element_object = b
+
+                this.element_object = {}
+                for (let i in this.field_set) {
+                    this.element_object[this.field_set[i]] = {text: '', widget: 'null'};
                 }
 
+                console.log()
+            },
+            fill_element_object() {
+                // if (this.element) {
+                //     for (let i in this.element) {
+                //         if (typeof this.element_object[i] != 'undefined') {
+                //             this.element_object[i]['text'] = this.element[i]
+                //         }
+                //     }
+                // }
+
+                if (this.element) {
+                    for (let i in this.element) {
+                        if (typeof this.element_object[i] != 'undefined') {
+                            this.element_object[i]['text'] = this.element[i]
+                        }
+                    }
+
+                    //this.element_object = JSON.parse(JSON.stringify(this.element_object))
+                }
+
+                console.log()
+            },
+            edit_elem() {
+                this.readonly = false
             }
         },
         mounted() {
-            this.fetch_elem();
+            //this.fetch_elem();
         },
         watch: {
             right_elem() {
-                this.fetch_elem();
+                if (this.right_elem) {
+                    this.fetch_elem();
+                    this.fill_field_set();
+                    this.create_element_object();
+                }
+            },
+            new_elem() {
+                if (this.new_elem) {
+                    this.fill_field_set();
+                    this.create_element_object();
+                    this.$emit('cansel_new_elem');
+                }
+            },
+            element() {
+                this.fill_element_object();
             }
         },
         computed: {
