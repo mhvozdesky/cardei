@@ -5,7 +5,13 @@
                 <div v-if="element_object" v-for="element in Object.keys(element_object)" class="item-field name-field">
                     <label class="item-field__label" for="name">{{ element }}</label>
                     <div class="item-field__group">
-                        <input v-model="element_object[element]['text']" class="item-field__input" type="search" id="name" name="name" v-bind:readonly="readonly">
+                        <input
+                            v-model="element_object[element]['text']"
+                            class="item-field__input"
+                            type="search"
+                            id="name"
+                            name="name"
+                            v-bind:readonly="['show_only'].includes(this.mode)">
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
                 </div>
@@ -13,9 +19,10 @@
         </div>
         <div class="button-area">
             <div class="btn-set">
-                <div @click="edit_elem" class="btn edit-btn">Редагувати</div>
-                <div class="btn save-btn">Зберегти</div>
-                <div class="btn delete-btn">Видалити</div>
+                <div v-if="['show_only'].includes(this.mode)" @click="edit_elem" class="btn edit-btn">Редагувати</div>
+                <div v-if="['edit', 'create'].includes(this.mode)" class="btn save-btn">Зберегти</div>
+                <div v-if="['edit'].includes(this.mode)" class="btn save-btn danger-button" @click="cancel_changes">Відмінити</div>
+                <div v-if="['show_only'].includes(this.mode)" class="btn delete-btn danger-button">Видалити</div>
             </div>
         </div>
 
@@ -33,6 +40,7 @@
                 unnecessary_fields: ['id', 'user', 'category'],
                 element_category: null,
                 readonly: true,
+                mode: null,
                 dictionary: {
                     "title": "Назва",
                     "login": "Логін",
@@ -133,7 +141,18 @@
                 console.log()
             },
             edit_elem() {
-                this.readonly = false
+                this.readonly = false;
+                this.mode = 'edit';
+            },
+            show_only_mode() {
+                this.mode = 'show_only'
+            },
+            apply_creation_mode() {
+                this.mode = 'create'
+            },
+            cancel_changes() {
+                this.mode = 'show_only';
+                this.fill_element_object();
             }
         },
         mounted() {
@@ -151,11 +170,13 @@
                 if (this.new_elem) {
                     this.fill_field_set();
                     this.create_element_object();
+                    this.apply_creation_mode();
                     this.$emit('cansel_new_elem');
                 }
             },
             element() {
                 this.fill_element_object();
+                this.show_only_mode();
             }
         },
         computed: {
@@ -301,4 +322,16 @@
     .btn:active {
         background: #409344; 
     } /* при нажатии */
+
+    .danger-button {
+        background-color: #cb3730ed;
+    }
+
+    .danger-button:hover {
+        background-color: #e14841ed;
+    }
+
+    .danger-button:active {
+        background-color: #c1120aed;
+    }
 </style>

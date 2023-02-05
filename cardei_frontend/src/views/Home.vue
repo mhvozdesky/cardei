@@ -91,6 +91,7 @@
             add_element(id_cat) {
                 this.category_id = id_cat;
                 this.new_elem = true;
+                this.right_elem = null;
             },
             get_profile() {
                 const url = '/api/v1/profile/';
