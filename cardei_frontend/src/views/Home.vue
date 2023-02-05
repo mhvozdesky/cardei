@@ -40,6 +40,7 @@
             <RightDash 
                 :right_elem="right_elem"
                 :category_id="category_id"
+                :categorylist="categorylist"
                 :new_elem="new_elem"
                 @cansel_new_elem="cansel_new_elem"
                 class="rightDash"
@@ -83,6 +84,7 @@
             show_elem(id_elem) {
                 this.right_elem = id_elem;
                 this.category_id = this.element_list.filter((obj) => obj['id'] == id_elem)[0].category
+                this.comp = 2;
                 //this.$refs.right_dash.fetch_elem()
             },
             cansel_new_elem() {
@@ -92,6 +94,7 @@
                 this.category_id = id_cat;
                 this.new_elem = true;
                 this.right_elem = null;
+                this.comp = 2;
             },
             get_profile() {
                 const url = '/api/v1/profile/';
@@ -220,12 +223,14 @@
         background-color: #f4f4f7;
         padding: 10px;
         max-width: 15%;
+        overflow: scroll;
     }
 
     .middleDash {
         flex-grow: 1;
         max-width: 25%;
         background: #f4f4f7;
+        overflow: scroll;
     }
 
     .rightDash {

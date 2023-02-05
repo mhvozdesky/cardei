@@ -3,14 +3,14 @@
         <div class="work-area">
             <div class="item-dash">
                 <div v-if="element_object" v-for="element in Object.keys(element_object)" class="item-field name-field">
-                    <label class="item-field__label" for="name">{{ element }}</label>
+                    <label class="item-field__label" v-bind:for="element">{{ this.dictionary[element] }}</label>
                     <div class="item-field__group">
                         <input
                             v-model="element_object[element]['text']"
                             class="item-field__input"
                             type="search"
-                            id="name"
-                            name="name"
+                            v-bind:id="element"
+                            v-bind:name="element"
                             v-bind:readonly="['show_only'].includes(this.mode)">
                         <button class="item-field__btn" type="button">Copy</button>
                     </div>
@@ -156,7 +156,16 @@
             }
         },
         mounted() {
-            //this.fetch_elem();
+            if (this.new_elem) {
+                this.fill_field_set();
+                this.create_element_object();
+                this.apply_creation_mode();
+                this.$emit('cansel_new_elem');
+            } else if (this.right_elem) {
+                this.fetch_elem();
+                this.fill_field_set();
+                this.create_element_object();
+            }
         },
         watch: {
             right_elem() {
@@ -239,8 +248,9 @@
 
     .item-field {
         display: flex;
-        align-items: center;
         padding-top: 25px;
+        flex-direction: column;
+        align-items: start;
     }
 
     .content-RightDash {
@@ -251,11 +261,13 @@
     .button-area {
         height: 50px;
         border: 0.5px solid #dbdbdb;
+        box-shadow: 1px -2px 6px 0px #99959529;
     }
 
     .work-area {
         flex-grow: 1;
         background-color: #f4f4f7;
+        overflow: scroll;
     }
 
     .item-dash {
@@ -263,7 +275,7 @@
     }
 
     .item-field__group {
-        padding-left: 30px;
+        padding-left: 0;
     }
 
     .item-field__input {
