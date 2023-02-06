@@ -131,7 +131,11 @@
                 if (this.element) {
                     for (let i in this.element) {
                         if (typeof this.element_object[i] != 'undefined') {
-                            this.element_object[i]['text'] = this.element[i]
+                            if (i == 'tag') {
+                                this.element_object[i]['text'] = this.tags_to_string(this.element[i])
+                            } else {
+                                this.element_object[i]['text'] = this.element[i]
+                            }
                         }
                     }
 
@@ -153,6 +157,12 @@
             cancel_changes() {
                 this.mode = 'show_only';
                 this.fill_element_object();
+            },
+            tags_to_string(tag_list) {
+                return tag_list.join(', ')
+            },
+            tags_to_list(tag_string) {
+                return tag_string.split(',').map((val) => {return val.trim()})
             }
         },
         mounted() {
