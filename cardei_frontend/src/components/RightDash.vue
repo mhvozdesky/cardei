@@ -37,9 +37,9 @@
         <div class="button-area">
             <div class="btn-set">
                 <div v-if="['show_only'].includes(this.mode)" @click="edit_elem" class="btn edit-btn">Редагувати</div>
-                <div v-if="['edit', 'create'].includes(this.mode)" class="btn save-btn">Зберегти</div>
+                <div v-if="['edit', 'create'].includes(this.mode)" class="btn save-btn" @click="save_element">Зберегти</div>
                 <div v-if="['edit'].includes(this.mode)" class="btn save-btn danger-button" @click="cancel_changes">Відмінити</div>
-                <div v-if="['show_only'].includes(this.mode)" class="btn delete-btn danger-button">Видалити</div>
+                <div v-if="['show_only'].includes(this.mode)" class="btn delete-btn danger-button" @click="delete_element">Видалити</div>
             </div>
         </div>
 
@@ -69,6 +69,10 @@
                     'cvv',
                     'pin_code'
                 ],
+                read_only_fields: [
+                    'date_creation',
+                    'date_update'
+                ],
                 dictionary: {
                     "title": "Назва",
                     "login": "Логін",
@@ -89,10 +93,11 @@
                 },
                 element: {},
                 element_object: null,
-                field_set: []
+                field_set: [],
+                new_id: null
             }
         },
-        props: ['right_elem', 'categorylist', 'category_id', 'new_elem'],
+        props: ['right_elem', 'categorylist', 'category_id', 'new_elem', 'update_right'],
         methods: {
             fetch_elem() {
                 if (this.right_elem) {
@@ -148,6 +153,125 @@
 
                 console.log()
             },
+            save_element() {
+                const data = {};
+                for (let i in this.element_object) {
+                    if (this.read_only_fields.includes(i)) {
+                        continue
+                    }
+
+                    if (i == 'tag') {
+                        data[i] = this.tags_to_list(this.element_object[i].text);
+                    } else {
+                        data[i] = this.element_object[i].text;
+                    }
+                }
+
+                data['category'] = this.category_id;
+
+                if (this.mode == 'create') {
+                    this.create_element(data);
+                } else if (this.mode == 'edit') {
+                    this.update_element(data);
+                }
+
+            },
+            create_element(data) {
+                const url = 'api/v1/items/';
+
+                const headers = {
+                        "Content-Type": "application/json",
+                        "masterpass": "qwerty"
+                    }
+
+                if (document.cookie) {
+                    headers['x-csrftoken'] = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1] 
+                }
+
+                try {                    
+                    axios.post(
+                        url,
+                        data,
+                        {
+                            withCredentials: true,
+                            headers: headers
+                        }
+                    )
+                    .then((response) => {
+                        this.new_id = response.data.id
+                        //this.$emit('item_update', response.data.id)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })  
+                } catch(e) {
+                    console.log(e)
+                }
+            },
+            update_element(data) {
+                const url = 'api/v1/items/' + this.element.id + '/';
+
+                const headers = {
+                        "Content-Type": "application/json",
+                        "masterpass": "qwerty"
+                    }
+
+                if (document.cookie) {
+                    headers['x-csrftoken'] = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1] 
+                }
+
+                try {                    
+                    axios.patch(
+                        url,
+                        data,
+                        {
+                            withCredentials: true,
+                            headers: headers
+                        }
+                    )
+                    .then((response) => {
+                        this.new_id = response.data.id
+                        //this.$emit('item_update', response.data.id)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })  
+                } catch(e) {
+                    console.log(e)
+                }
+            },
+            delete_element() {
+                const url = 'api/v1/items/' + this.element.id + '/';
+
+                const headers = {
+                        "Content-Type": "application/json",
+                        "masterpass": "qwerty"
+                    }
+
+                if (document.cookie) {
+                    headers['x-csrftoken'] = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1] 
+                }
+
+                try {                    
+                    axios.delete(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: headers
+                        }
+                    )
+                    .then((response) => {
+                        this.$emit('delete_element')
+                        this.element = null;
+                        this.element_object = null;
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })  
+                } catch(e) {
+                    console.log(e)
+                } 
+            },
             edit_elem() {
                 this.readonly = false;
                 this.mode = 'edit';
@@ -166,7 +290,12 @@
                 return tag_list.join(', ')
             },
             tags_to_list(tag_string) {
-                return tag_string.split(',').map((val) => {return val.trim()})
+                const res =  tag_string.split(',').map((val) => {return val.trim()})
+                if (res.length == 1 && res[0] == '') {
+                    return []
+                }
+
+                return res
             }
         },
         mounted() {
@@ -179,6 +308,7 @@
                 this.fetch_elem();
                 this.fill_field_set();
                 this.create_element_object();
+                this.mode = 'show_only'
             }
         },
         watch: {
@@ -187,6 +317,7 @@
                     this.fetch_elem();
                     this.fill_field_set();
                     this.create_element_object();
+                    this.mode = 'show_only'
                 }
             },
             new_elem() {
@@ -200,6 +331,20 @@
             element() {
                 this.fill_element_object();
                 this.show_only_mode();
+            },
+            new_id() {
+                if (this.new_id) {
+                    this.$emit('item_update', this.new_id);
+                    this.new_id = null;
+                }
+            },
+            update_right() {
+                if (this.right_elem) {
+                    this.fetch_elem();
+                    this.fill_field_set();
+                    this.create_element_object();
+                    this.mode = 'show_only'
+                }
             }
         },
         computed: {

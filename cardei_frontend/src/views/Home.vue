@@ -19,7 +19,10 @@
                 :categorylist="categorylist"
                 :category_id="category_id"
                 :new_elem="new_elem"
+                :update_right="update_right"
                 @cansel_new_elem="cansel_new_elem"
+                @item_update="item_update"
+                @delete_element="delete_element"
                 class="rightDash"
                 ref="right_dash"
             />
@@ -42,7 +45,10 @@
                 :category_id="category_id"
                 :categorylist="categorylist"
                 :new_elem="new_elem"
+                :update_right="update_right"
                 @cansel_new_elem="cansel_new_elem"
+                @item_update="item_update"
+                @delete_element="delete_element"
                 class="rightDash"
             />
         </div>
@@ -71,7 +77,9 @@
                 element_list: null,
                 right_elem: null,
                 category_id: null,
-                new_elem: false
+                new_elem: false,
+                added_element: null,
+                update_right: true
             }
         },
         methods: {
@@ -185,6 +193,16 @@
                 } catch {
                     console.log('error get_element_list')
                 }
+            },
+            item_update(id_elem) {
+                this.added_element = id_elem;
+                this.get_taglist();
+                this.element_list = null;
+                this.get_element_list();
+            },
+            delete_element() {
+                this.get_element_list();
+                this.right_elem = null;
             }
         },
         computed: {
@@ -205,6 +223,16 @@
             this.get_categorylist();
             this.get_taglist();
             this.get_element_list();
+        },
+        watch: {
+            element_list() {
+                if (this.added_element && this.element_list) {
+                    this.right_elem = null;
+                    this.show_elem(this.added_element);
+                    this.added_element = null;
+                    this.update_right = ! this.update_right;
+                }
+            }
         }
     }
 </script>
