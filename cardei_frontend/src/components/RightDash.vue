@@ -124,22 +124,6 @@
                 this.field_set = field_set.filter((obj) => ! this.unnecessary_fields.includes(obj));
             },
             create_element_object() {
-                // let b = []
-                // for (let i in this.field_set) {
-                //     let a = {}
-                //     a[this.field_set[i]] = {text: '', vig: null}
-                //     b.push(a)
-                // }
-
-                // this.element_object = b
-
-                // let b = {}
-                // for (let i in this.field_set) {
-                //     b[this.field_set[i]] = {text: '', widget: null}
-                // }
-
-                // this.element_object = b
-
                 this.element_object = {}
                 for (let i in this.field_set) {
                     this.element_object[this.field_set[i]] = {text: '', widget: 'null'};
@@ -148,14 +132,6 @@
                 console.log()
             },
             fill_element_object() {
-                // if (this.element) {
-                //     for (let i in this.element) {
-                //         if (typeof this.element_object[i] != 'undefined') {
-                //             this.element_object[i]['text'] = this.element[i]
-                //         }
-                //     }
-                // }
-
                 if (this.element) {
                     for (let i in this.element) {
                         if (typeof this.element_object[i] != 'undefined') {
@@ -227,19 +203,7 @@
             }
         },
         computed: {
-            // field_set() {
-            //     if (this.element) {
-            //         console.log(this.element)
-            //         const data = []
-            //         for (field in this.element) {
-            //             if (typeof this.dictionary[field] != 'undefined') {
-            //                 console.log(this.dictionary[field])
-            //                 data.push(field)
-            //             }
-            //         }
-            //         return data;
-            //     }
-            // }
+            //
         }
     }
 </script>
