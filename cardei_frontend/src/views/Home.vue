@@ -203,6 +203,7 @@
         mounted() {
             this.get_profile();
             this.get_categorylist();
+            this.get_taglist();
             this.get_element_list();
         }
     }
