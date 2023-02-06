@@ -5,7 +5,7 @@
             <div @click="comp_change(1)"><span>Елементи</span></div>
             <div @click="comp_change(2)"><span>Вікно</span></div>
         </div>
-        <div class="home" v-if="width>=750">
+        <div class="home" v-if="width >= 750">
             <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
             <MiddleDash 
                 :categorylist="categorylist"
@@ -264,7 +264,7 @@
         text-align: center;
     }
 
-    @media (max-width: 750px) {
+    @media (max-width: 749px) {
         .choice-set div {
             display: flex;
         }

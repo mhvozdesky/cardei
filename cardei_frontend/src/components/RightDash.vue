@@ -5,14 +5,31 @@
                 <div v-if="element_object" v-for="element in Object.keys(element_object)" class="item-field name-field">
                     <label class="item-field__label" v-bind:for="element">{{ this.dictionary[element] }}</label>
                     <div class="item-field__group">
-                        <input
+                        <textarea
+                            v-if="['notes', 'text'].includes(element)"
                             v-model="element_object[element]['text']"
                             class="item-field__input"
                             type="search"
                             v-bind:id="element"
                             v-bind:name="element"
-                            v-bind:readonly="['show_only'].includes(this.mode)">
-                        <button class="item-field__btn" type="button">Copy</button>
+                            v-bind:readonly="['show_only'].includes(this.mode)"
+                            rows="15"
+                        ></textarea>
+                        <input
+                            v-else
+                            v-model="element_object[element]['text']"
+                            class="item-field__input"
+                            type="search"
+                            v-bind:id="element"
+                            v-bind:name="element"
+                            v-bind:readonly="['show_only'].includes(this.mode)"
+                        >
+                        <button
+                            v-if="this.copy_fields.includes(element)"
+                            class="item-field__btn"
+                            type="button"
+                        >Copy
+                        </button>
                     </div>
                 </div>
             </div>
@@ -41,6 +58,17 @@
                 element_category: null,
                 readonly: true,
                 mode: null,
+                copy_fields: [
+                    'login',
+                    'password',
+                    'site',
+                    'owner_name',
+                    'card_number',
+                    'year',
+                    'month',
+                    'cvv',
+                    'pin_code'
+                ],
                 dictionary: {
                     "title": "Назва",
                     "login": "Логін",
@@ -293,23 +321,18 @@
         width: 500px;
         border: 0.5px solid #4caf50;
         padding-left: 5px;
+        min-height: 26.5px;
     }
 
-    @media (max-width: 1130px) {
+    @media (max-width: 900px) {
         .item-field__input {
-            width: 355px;
+            width: 416px;
         }
     }
 
-    @media (max-width: 870px) {
+    @media (max-width: 469px) {
         .item-field__input {
-            width: 260px;
-        }
-    }
-
-    @media (max-width: 425px) {
-        .item-field__input {
-            width: 195px;
+            width: 280px;
         }
     }
 
