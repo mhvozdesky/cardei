@@ -4,6 +4,7 @@
             <div class="item-dash">
                 <div v-if="element_object" v-for="element in Object.keys(element_object)" class="item-field name-field">
                     <label class="item-field__label" v-bind:for="element">{{ this.dictionary[element] }}</label>
+                    <label v-if="element == 'password'" class="create-pass" @click="gen_pass">Створити</label>
                     <div class="item-field__group">
                         <textarea
                             v-if="['notes', 'text'].includes(element)"
@@ -303,11 +304,23 @@
                 const value = this.element_object[e.target.attributes.for.nodeValue].text
                 navigator.clipboard.writeText(value)
                 .then(() => {
-                    console.log('Done')
+                    // console.log('Done')
                 })
                 .catch(err => {
                     console.log('Something went wrong', err);
                 });
+            },
+            gen_pass() {
+                const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const passwordLength = 12;
+                let password = "";
+
+                for (var i = 0; i <= passwordLength; i++) {
+                    var randomNumber = Math.floor(Math.random() * chars.length);
+                    password += chars.substring(randomNumber, randomNumber +1);
+                }
+
+                this.element_object.password.text = password;
             }
         },
         mounted() {
@@ -499,5 +512,9 @@
 
     .danger-button:active {
         background-color: #c1120aed;
+    }
+
+    .create-pass {
+        cursor: pointer;
     }
 </style>
