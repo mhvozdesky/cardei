@@ -11,6 +11,7 @@
                     </ul>
                 </div>
             </div>
+            <input type="search" placeholder="Пошук" class="search" @input="this.$emit('input_search', $event.target.value)"/>
         </div>
         <ul v-if="element_list" class="list-MiddleDash">
             <li v-for="element in element_list" class="item-MiddleDash" @click="this.$emit('show_elem', element.id)">{{ element.title }}</li>
@@ -26,6 +27,11 @@
 </script>
 
 <style>
+    .button-area {
+        display: flex;
+        justify-content: space-between;
+    }
+
     .item-MiddleDash {
         margin: 0;
     }
@@ -86,5 +92,9 @@
 
     .add-set:hover > .ul-add {
         display: block;
+    }
+
+    .search {
+        border: none;
     }
 </style>

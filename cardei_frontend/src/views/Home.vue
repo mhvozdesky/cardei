@@ -23,6 +23,7 @@
                 class="middleDash"
                 @show_elem="show_elem"
                 @add_element="add_element"
+                @input_search="set_search_field"
             />
             <RightDash 
                 :right_elem="right_elem"
@@ -57,6 +58,7 @@
                 class="middleDash"
                 @show_elem="show_elem"
                 @add_element="add_element"
+                @input_search="set_search_field"
             />
         </div>
         <div class="mobile-home" v-else-if="comp == 2">
@@ -102,7 +104,8 @@
                 added_element: null,
                 update_right: true,
                 category_selected: null,
-                tag_selected: null
+                tag_selected: null,
+                search_field: null
             }
         },
         methods: {
@@ -251,6 +254,16 @@
             cancel_tag() {
                 this.tag_selected = null;
             },
+            set_search_field(value) {
+                this.search_field = value;
+            },
+            filter_by_search() {
+                if (this.element_list && this.search_field) {
+                    this.element_list_display =this.element_list.filter((val) => val.title.toLowerCase().includes(this.search_field));
+                } else {
+                    this.filter_by_category();
+                }
+            }
         },
         computed: {
             env() {
@@ -287,6 +300,9 @@
             },
             tag_selected() {
                 this.filter_by_category();
+            },
+            search_field() {
+                this.filter_by_search();
             }
         }
     }
