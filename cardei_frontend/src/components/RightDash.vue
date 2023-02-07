@@ -112,7 +112,7 @@
                                 withCredentials: true,
                                 headers: {
                                     "Content-Type": "application/json",
-                                    "Masterpass": 'qwerty'
+                                    "Masterpass": this.$store.state.masterpass
                                 }
                             }
                         )
@@ -184,7 +184,7 @@
 
                 const headers = {
                         "Content-Type": "application/json",
-                        "masterpass": "qwerty"
+                        "Masterpass": this.$store.state.masterpass
                     }
 
                 if (document.cookie) {
@@ -216,7 +216,7 @@
 
                 const headers = {
                         "Content-Type": "application/json",
-                        "masterpass": "qwerty"
+                        "Masterpass": this.$store.state.masterpass
                     }
 
                 if (document.cookie) {
@@ -248,7 +248,7 @@
 
                 const headers = {
                         "Content-Type": "application/json",
-                        "masterpass": "qwerty"
+                        "Masterpass": this.$store.state.masterpass
                     }
 
                 if (document.cookie) {
@@ -311,16 +311,18 @@
                 });
             },
             gen_pass() {
-                const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                const passwordLength = 12;
-                let password = "";
+                if (['edit', 'create'].includes(this.mode)) {
+                    const chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    const passwordLength = 12;
+                    let password = "";
 
-                for (var i = 0; i <= passwordLength; i++) {
-                    var randomNumber = Math.floor(Math.random() * chars.length);
-                    password += chars.substring(randomNumber, randomNumber +1);
+                    for (var i = 0; i <= passwordLength; i++) {
+                        var randomNumber = Math.floor(Math.random() * chars.length);
+                        password += chars.substring(randomNumber, randomNumber +1);
+                    }
+
+                    this.element_object.password.text = password;
                 }
-
-                this.element_object.password.text = password;
             }
         },
         mounted() {

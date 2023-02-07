@@ -205,8 +205,8 @@
                             withCredentials: true,
                             headers: {
                                 "Content-Type": "application/json",
-                                //"Masterpass": this.$store.state.masterpass
-                                "Masterpass": 'qwerty'
+                                "Masterpass": this.$store.state.masterpass
+                                //"Masterpass": 'qwerty'
                             }
                         }
                     )
