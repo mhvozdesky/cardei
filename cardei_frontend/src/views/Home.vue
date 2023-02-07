@@ -201,6 +201,7 @@
                 this.get_element_list();
             },
             delete_element() {
+                this.get_taglist();
                 this.get_element_list();
                 this.right_elem = null;
             }
