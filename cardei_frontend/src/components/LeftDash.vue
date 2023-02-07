@@ -2,23 +2,22 @@
     <div class="content-LeftDash">
         <div class="categories item-LeftDash">
             <div class="title-item-LeftDash">
-                <div class="text-title-item-LeftDash">Категорії</div>
-                <div class="btn-title-item-LeftDash"></div>
+                <div class="text-title-item-LeftDash" v-bind:class="this.bolt_class">Категорії</div>
+                <div class="btn-title-item-LeftDash" @click="this.$emit('cancel_cat')"></div>
             </div>
             <ul v-if="categorylist" class="list-item-LeftDash">
-                <li v-for="category in categorylist" :key="category.id">
+                <li v-for="category in categorylist" :key="category.id" @click="this.$emit('filter_by_category', category.id)">
                     {{category.title}}
                 </li>
-                <li>Пароль</li>
             </ul>
         </div>
         <div class="tags item-LeftDash">
             <div class="title-item-LeftDash">
-                <div class="text-title-item-LeftDash">Теги</div>
-                <div class="btn-title-item-LeftDash"></div>
+                <div class="text-title-item-LeftDash" v-bind:class="this.bolt_tag_class">Теги</div>
+                <div class="btn-title-item-LeftDash" @click="this.$emit('cancel_tag')"></div>
             </div>
             <ul v-if="taglist" class="list-item-LeftDash">
-                <li v-for="tag in taglist" :key="tag.id">
+                <li v-for="tag in taglist" :key="tag.id" @click="this.$emit('filter_by_tag', tag.title)">
                     {{ tag.title }}
                 </li>
             </ul>
@@ -34,7 +33,23 @@
                 data: null
             }
         },
-        props: ['categorylist', 'taglist']
+        props: ['categorylist', 'taglist', 'category_selected', 'tag_selected'],
+        computed: {
+            bolt_class() {
+                if (this.category_selected) {
+                    return 'bold-text'
+                }
+
+                return ''
+            },
+            bolt_tag_class() {
+                if (this.tag_selected) {
+                    return 'bold-text'
+                }
+
+                return ''
+            }
+        }
     }
 </script>
 
@@ -60,5 +75,9 @@
 
     .title-item-LeftDash {
         display: flex;
+    }
+
+    .bold-text {
+        font-weight: 600;
     }
 </style>

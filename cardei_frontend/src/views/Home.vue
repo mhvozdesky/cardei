@@ -6,10 +6,20 @@
             <div @click="comp_change(2)"><span>Вікно</span></div>
         </div>
         <div class="home" v-if="width >= 750">
-            <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
+            <LeftDash
+                :categorylist="categorylist"
+                :taglist="taglist"
+                :category_selected="category_selected"
+                :tag_selected="tag_selected"
+                @filter_by_category="set_category_selected"
+                @filter_by_tag="set_tag_selected"
+                @cancel_cat="cancel_cat"
+                @cancel_tag="cancel_tag"
+                class="leftDash"
+            />
             <MiddleDash 
                 :categorylist="categorylist"
-                :element_list="element_list"
+                :element_list="element_list_display"
                 class="middleDash"
                 @show_elem="show_elem"
                 @add_element="add_element"
@@ -28,12 +38,22 @@
             />
         </div>
         <div class="mobile-home" v-else-if="comp == 0">
-            <LeftDash :categorylist="categorylist" :taglist="taglist" class="leftDash" />
+            <LeftDash
+                :categorylist="categorylist"
+                :taglist="taglist"
+                :category_selected="category_selected"
+                :tag_selected="tag_selected"
+                @filter_by_category="set_category_selected"
+                @filter_by_tag="set_tag_selected"
+                @cancel_cat="cancel_cat"
+                @cancel_tag="cancel_tag"
+                class="leftDash"
+            />
         </div>
         <div class="mobile-home" v-else-if="comp == 1">
             <MiddleDash
                 :categorylist="categorylist"
-                :element_list="element_list"
+                :element_list="element_list_display"
                 class="middleDash"
                 @show_elem="show_elem"
                 @add_element="add_element"
@@ -75,11 +95,14 @@
                 categorylist: null,
                 taglist: null,
                 element_list: null,
+                element_list_display: null,
                 right_elem: null,
                 category_id: null,
                 new_elem: false,
                 added_element: null,
-                update_right: true
+                update_right: true,
+                category_selected: null,
+                tag_selected: null
             }
         },
         methods: {
@@ -204,7 +227,30 @@
                 this.get_taglist();
                 this.get_element_list();
                 this.right_elem = null;
-            }
+            },
+            set_category_selected(id_cat) {
+                this.category_selected = id_cat;
+            },
+            filter_by_category() {
+                if (this.category_selected && this.element_list) {
+                    this.element_list_display =this.element_list.filter((val) => val.category == this.category_selected);
+                } else {
+                    this.element_list_display = this.element_list;
+                }
+
+                if (this.tag_selected && this.element_list) {
+                    this.element_list_display = this.element_list_display.filter((val) => val.tag.includes(this.tag_selected))
+                }
+            },
+            cancel_cat() {
+                this.category_selected = null;
+            },
+            set_tag_selected(tag_title) {
+                this.tag_selected = tag_title;
+            },
+            cancel_tag() {
+                this.tag_selected = null;
+            },
         },
         computed: {
             env() {
@@ -233,6 +279,14 @@
                     this.added_element = null;
                     this.update_right = ! this.update_right;
                 }
+
+                this.filter_by_category();
+            },
+            category_selected() {
+                this.filter_by_category();
+            },
+            tag_selected() {
+                this.filter_by_category();
             }
         }
     }
