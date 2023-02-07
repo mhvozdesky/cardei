@@ -11,6 +11,7 @@ from users_items import models, serializers
 from notification import notification
 from encryption_machine.machine import CardeiPycryptodome
 from constants.constants import items_fields
+from .utils import clear_empty_tags
 
 
 class ItemsViewSet(viewsets.ModelViewSet):
@@ -101,6 +102,8 @@ class ItemsViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        clear_empty_tags(request.user)
+
         # select data to return
         serializer = serializers.UsersItemsSerializer(
             item,
@@ -135,6 +138,11 @@ class ItemsViewSet(viewsets.ModelViewSet):
         )
 
         return Response(data)
+
+    def destroy(self, request, *args, **kwargs):
+        res = super().destroy(request, *args, **kwargs)
+        clear_empty_tags(request.user)
+        return res
 
     @staticmethod
     def get_category_item_from_request(req_cat: str) -> models.Category:
