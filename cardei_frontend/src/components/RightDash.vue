@@ -28,6 +28,8 @@
                             v-if="this.copy_fields.includes(element)"
                             class="item-field__btn"
                             type="button"
+                            v-bind:for="element"
+                            @click="click_copy"
                         >Copy
                         </button>
                     </div>
@@ -296,6 +298,16 @@
                 }
 
                 return res
+            },
+            click_copy(e) {
+                const value = this.element_object[e.target.attributes.for.nodeValue].text
+                navigator.clipboard.writeText(value)
+                .then(() => {
+                    console.log('Done')
+                })
+                .catch(err => {
+                    console.log('Something went wrong', err);
+                });
             }
         },
         mounted() {
