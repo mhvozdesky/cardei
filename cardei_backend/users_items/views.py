@@ -1,3 +1,7 @@
+import tempfile
+import json
+
+from django.http import HttpResponse, HttpResponseNotFound
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -157,6 +161,49 @@ class ItemsViewSet(viewsets.ModelViewSet):
             )
         return True, None
 
+
+class ExportItems(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        items_qs = models.Element.objects.filter(user=request.user)
+        serializer_data = []
+
+        if not request.headers.get('Masterpass', None):
+            return Response({'detail': notification.MISSING_MASTERPASS},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        cardei_pycryptodome = CardeiPycryptodome(request.headers['Masterpass'])
+
+        for qs in items_qs:
+            serializer = serializers.UsersItemsSerializer(
+                qs,
+                fields=items_fields.get(qs.category.title, None)
+            )
+            data = cardei_pycryptodome.process_dict(
+                serializer.data,
+                action='decrypt'
+            )
+
+            for i in ['id', 'user']:
+                data.pop(i)
+
+            data['category'] = models.Category.objects.get(pk=data['category']).title
+
+            serializer_data.append(data)
+
+        read_file = None
+        file_name = 'export_items.json'
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with open(f'{tmpdir}/{file_name}', 'w') as file:
+                json.dump(serializer_data, file, indent = 4)
+
+            with open(f'{tmpdir}/{file_name}', 'r') as file:
+                read_file = file.read()
+
+        response = HttpResponse(read_file, content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename={file_name}'
+        return response
 
 class TagListView(APIView):
     permission_classes = (IsAuthenticated,)
