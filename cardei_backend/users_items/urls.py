@@ -17,6 +17,7 @@ urlpatterns = [
         ),
         name='url_items_detail'
     ),
+    path('items/export/', views.ExportItems.as_view()),
     path('taglist/', views.TagListView.as_view(), name='url_taglist'),
     path('categorylist/', views.CategoryListView.as_view(), name='url_categorylist')
 ]
