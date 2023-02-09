@@ -10,6 +10,7 @@
                 <label>{{ this.$store.state.user.email }}</label>
                 <div class="sub_menu">
                     <div @click="logout" class="logout">Logout</div>
+                    <div @click="export_json" class="export-json">Json</div>
                 </div>
             </div>
         </header>
@@ -45,6 +46,35 @@
                     })
                 } catch {
                     console.log('error logout')
+                }
+            },
+            export_json() {
+                const url = '/api/v1/items/export/';
+                try {
+                    axios.get(
+                        url,
+                        {
+                            withCredentials: true,
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Masterpass": this.$store.state.masterpass
+                                //"Masterpass": 'qwerty'
+                            }
+                        }
+                    )
+                    .then((response) => {
+                        var a = document.createElement("a");
+                        const b = JSON.stringify(response.data, null, 4)
+                        var file = new Blob([b], {type: 'application/json'});
+                        a.href = URL.createObjectURL(file);
+                        a.download = 'export.json';
+                        a.click();
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                } catch {
+                    console.log('error get_element_list')
                 }
             }
         },
