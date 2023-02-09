@@ -1,18 +1,3 @@
-#FROM node:16
-
-#WORKDIR /app
-
-#COPY package*.json ./
-
-#RUN npm install
-
-#RUN npm install axios
-
-#COPY . .
-
-#CMD npm run serve
-
-
 FROM node:16
 
 WORKDIR /app
@@ -27,6 +12,6 @@ RUN npm install && \
 
 COPY . .
 
-CMD npm run serve
-# CMD npm run build
+# CMD npm run serve
+CMD npm run build
 # CMD sleep 10000

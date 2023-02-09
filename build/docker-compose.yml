@@ -1,30 +1,42 @@
 version: '3.7'
 services:
   web:
-    build: ../cardei_backend/
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - 8000:8000
+    build: 
+      context: ../cardei_backend/
+      dockerfile: ../build/dockerfiles/Dockerfile_back
+    command: gunicorn cardei_backend.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - web_static:/app/static/
     expose:
       - 8000
     env_file:
-      - ../local_run/env.dev
+      - ../local_run/env.prod
     depends_on:
       - db_cardei
   db_cardei:
     image: postgres:14.5
     env_file:
-      - ../local_run/env.dev
+      - ../local_run/env.prod
     volumes:
       - ../local_run/data_db:/var/lib/postgresql/data
       - ../local_run/dump:/dumps
   vue:
     build:
       context: ../cardei_frontend/
-      dockerfile: Dockerfile
+      dockerfile: ../build/dockerfiles/Dockerfile_front
     volumes:
-      - ../cardei_frontend/:/app
+      - vue_dist:/app/dist
+  nginx:
+    build: ./nginx
     ports:
-      - '8080:8080'
+      - 80:80
+    depends_on:
+      - web
+      - vue
+    volumes:
+      - web_static:/files/web_static/
+      - vue_dist:/vue/dist/
 
-
+volumes:
+  web_static:
+  vue_dist:
