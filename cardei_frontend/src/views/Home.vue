@@ -1,9 +1,9 @@
 <template>
     <div v-if="!global_error" class="home-content">
         <div class="choice-set">
-            <div @click="comp_change(0)"><span>Фільтр</span></div>
-            <div @click="comp_change(1)"><span>Елементи</span></div>
-            <div @click="comp_change(2)"><span>Вікно</span></div>
+            <div @click="comp_change(0)" v-bind:class="(this.comp == 0) ? 'tab-active' : ''"><span>Фільтр</span></div>
+            <div @click="comp_change(1)" v-bind:class="(this.comp == 1) ? 'tab-active' : ''"><span>Елементи</span></div>
+            <div @click="comp_change(2)" v-bind:class="(this.comp == 2) ? 'tab-active' : ''"><span>Вікно</span></div>
         </div>
         <div class="home" v-if="width >= 750">
             <LeftDash
@@ -233,6 +233,7 @@
             },
             set_category_selected(id_cat) {
                 this.category_selected = id_cat;
+                this.comp = 1;
             },
             filter_by_category() {
                 if (this.category_selected && this.element_list) {
@@ -250,6 +251,7 @@
             },
             set_tag_selected(tag_title) {
                 this.tag_selected = tag_title;
+                this.comp = 1;
             },
             cancel_tag() {
                 this.tag_selected = null;
@@ -386,5 +388,9 @@
 
     .mobile-home {
         height: 100%;
+    }
+
+    .choice-set .tab-active {
+        background: radial-gradient(ellipse at bottom, #ffffff 10%,#4CAF50 1%);
     }
 </style>
