@@ -30,12 +30,14 @@ services:
     build: ./nginx
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - web
       - vue
     volumes:
       - web_static:/files/web_static/
       - vue_dist:/vue/dist/
+      - ../local_run/:/etc/ssl/
 
 volumes:
   web_static:
