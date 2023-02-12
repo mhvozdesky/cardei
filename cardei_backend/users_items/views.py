@@ -24,7 +24,7 @@ class ItemsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return models.Element.objects.filter(user=user)
+        return models.Element.objects.filter(user=user).order_by('-date_update')
 
     def items_list(self, request):
         querysets = self.get_queryset()
