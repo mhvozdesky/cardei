@@ -35,6 +35,8 @@ services:
       - web
       - vue
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf  
       - web_static:/files/web_static/
       - vue_dist:/vue/dist/
       - ../local_run/:/etc/ssl/
