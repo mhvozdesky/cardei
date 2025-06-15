@@ -38,6 +38,7 @@ services:
       - web_static:/files/web_static/
       - vue_dist:/vue/dist/
       - ../local_run/:/etc/ssl/
+      - ../local_run/pki-validation:/files/.well-known/pki-validation/
 
 volumes:
   web_static:
